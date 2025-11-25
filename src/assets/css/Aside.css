@@ -1,0 +1,126 @@
+aside ul::-webkit-scrollbar {
+    display: none;
+}
+
+aside ul {
+    scrollbar-width: none !important;
+}
+
+.sidebar .btnname {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 10% 85%;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: var(--fw-sm);
+    text-align: left;
+}
+
+.sidebar ul li a {
+    color: var(--text-secondary);
+    font-weight: var(--fw-sm);
+    transition: var(--transition);
+    padding-bottom: 5px;
+}
+
+.sidebar li a.active,
+.sidebar li a:hover {
+    color: var(--primary);
+}
+
+.offcanvas {
+    background-color: var(--secondary) !important;
+}
+
+.collapse-wrapper {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, opacity 0.25s ease;
+    opacity: 0;
+}
+
+.collapse-wrapper.open {
+    max-height: 200px;
+    /* adjust depending on menu height */
+    opacity: 1;
+}
+
+aside {
+    width: 300px;
+    transition: 0.5s all ease-in-out;
+}
+
+.sidebar.collapsed {
+    width: 0px;
+}
+
+.sidebar.collapsed .btnname img,
+.sidebar.collapsed .btnname span,
+.sidebar.collapsed .righticon i,
+.sidebar.collapsed aside .nav img {
+    display: none;
+}
+
+@media screen and (min-width:1140px) and (max-width: 1250px) {
+
+    aside .btnname,
+    aside .righticon i {
+        font-size: 12px !important;
+    }
+
+    aside .btnname img {
+        height: 17px !important;
+    }
+
+    aside .nav img {
+        height: 35px !important;
+    }
+}
+
+@media screen and (min-width: 1140px) {
+
+    /* Aside */
+    aside {
+        height: 100vh;
+        position: sticky;
+        top: 0px;
+        left: 0px;
+        z-index: 999 !important;
+        border-right: 1px solid #E6E4F0;
+    }
+
+    aside .main-ul {
+        height: 84vh;
+        overflow: hidden scroll;
+    }
+
+    .sidebar .btnname {
+        font-size: 14px;
+    }
+
+    .sidebar {
+        padding: 5px 0px;
+    }
+
+    .sidebar ul li a {
+        font-size: 14px;
+    }
+
+}
+
+@media screen and (max-width: 1140px) {
+
+    aside,
+    .collapsebtn {
+        display: none;
+    }
+
+    .sidebar ul li a {
+        font-size: 14px;
+    }
+
+    .sidebar .btnname {
+        font-size: 14px;
+    }
+
+}

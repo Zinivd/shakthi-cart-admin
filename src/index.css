@@ -1,0 +1,171 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+/* Common CSS */
+:root {
+  /* Colors */
+  --main: #212844;
+  --sub: #F7A102;
+  --primary: #000;
+  --secondary: #fff;
+  --light: #E9E7E8;
+  --bg-light: #F3F9FB;
+  --sub-light: #EDEFF6;
+  --ter-light: #F7F7FC;
+  --text-primary: #222222;
+  --text-secondary: #666666;
+  --text-tertiary: #ADADAD;
+  --text-quarterly: #3C4242;
+  --border: #D9D9D9;
+  --input-border: #B4B4B4;
+  --input-bg: #F9F9F9;
+  --tinp-border: #9E9E9E;
+  --trow-bg: #ffffff;
+  --thead-bg: #f5f5f5;
+  --green: #009400;
+  --red: #DC2626;
+  --yellow: #F4A300;
+  --purple: #8A1DEF;
+  --blue: #008ECC;
+  --radium: #65FDF4;
+  --brown: #362526;
+  --gray: #3C4242;
+  --box-shadow: 0 0 0.875rem 0 rgba(33, 37, 41, 0.05);
+  --transition: 0.5s ease-in-out;
+
+  /* Fonts */
+  --main-font: "Outfit", sans-serif;
+  --fw-ms: 300;
+  --fw-sm: 400;
+  --fw-md: 500;
+  --fw-lg: 600;
+  --fw-xl: 700;
+  --fw-xxl: 800;
+  --fw-xxxl: 900;
+}
+
+/* Style CSS */
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: transparent;
+  font-family: var(--main-font) !important;
+  /* user-select: none; */
+}
+
+a {
+  text-decoration: none !important;
+  cursor: pointer;
+}
+
+li {
+  list-style-type: none;
+  cursor: pointer;
+}
+
+input {
+  outline: none;
+}
+
+label span {
+  color: var(--red) !important;
+}
+
+html::-webkit-scrollbar {
+  width: 12px;
+  cursor: pointer;
+}
+
+html::-webkit-scrollbar-track {
+  background: #f4f4f4;
+}
+
+html::-webkit-scrollbar-thumb {
+  background-color: #D9D9D9;
+  border-radius: 10px;
+  border: 3px solid #f4f4f4;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background-color: var(--main);
+}
+
+html {
+  scrollbar-width: none !important;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input[type="number"]::-ms-clear {
+  display: none;
+}
+
+.text-danger {
+  color: var(--red) !important;
+}
+
+.text-success {
+  color: var(--green) !important;
+}
+
+/* Toastr */
+.toast-main {
+  position: fixed;
+  bottom: 2%;
+  right: 2%;
+}
+
+.toast {
+  --bs-toast-border-radius: 10px !important;
+}
+
+.toast-body {
+  background: var(--primary) !important;
+  color: var(--secondary);
+  font-size: 12px !important;
+  text-transform: capitalize;
+  border-radius: 10px !important;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  column-gap: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+/* Avatar CSS */
+.avatar-25 {
+  height: 25px;
+  width: 25px;
+}
+
+.avatar-30 {
+  height: 30px;
+  width: 30px;
+}
+
+.avatar-40 {
+  height: 40px;
+  width: 40px;
+}
+
+.avatar-50 {
+  height: 50px;
+  width: 50px;
+}
+
+.avatar-25,
+.avatar-30,
+.avatar-40,
+.avatar-50 {
+  border-radius: 50%;
+  object-fit: cover;
+}
