@@ -45,7 +45,7 @@ const CategoryList = () => {
     <div className="container-fluid px-0">
       <div className="body-head mb-3">
         <h4>Category List</h4>
-        <Link to="/category/add">
+        <Link to="/product/category/add">
           <button className="listbtn">Add Category</button>
         </Link>
       </div>
@@ -99,10 +99,16 @@ const CategoryList = () => {
                     </td>
                     <td>
                       <div className="d-flex align-items-center gap-2">
-                        <Link to={`/category/view/${item.id}`} title="View">
+                        <Link
+                          to={`/product/category/view/${item.id}`}
+                          title="View"
+                        >
                           <i className="fas fa-external-link"></i>
                         </Link>
-                        <Link to={`/category/edit/${item.id}`} title="Edit">
+                        <Link
+                          to={`/product/category/edit/${item.id}`}
+                          title="Edit"
+                        >
                           <i className="fas fa-pen-to-square"></i>
                         </Link>
                       </div>

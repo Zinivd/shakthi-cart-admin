@@ -1,5 +1,5 @@
 import React from "react";
-import { IconDashboard } from "../../../assets/Assets";
+import { IconDashboard } from "../../../../public/assets/Assets";
 
 const ProductView = () => {
   return (

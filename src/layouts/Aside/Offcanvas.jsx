@@ -1,5 +1,5 @@
 import React from "react";
-import { Logo } from "../../assets/Assets";
+import { Logo } from "../../../public/assets/Assets";
 import Menu from "./Menu";
 import User from "../Navbar/User";
 

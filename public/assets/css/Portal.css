@@ -1,0 +1,129 @@
+.portal-main {
+    margin: auto;
+}
+
+.portal-div {
+    display: grid;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.portal-form label {
+    color: var(--text-primary);
+    font-weight: var(--fw-sm);
+    margin-bottom: 8px;
+}
+
+.portal-form h6 {
+    color: var(--text-secondary);
+    font-weight: var(--fw-md);
+}
+
+.portal-form h6 a {
+    color: var(--sub);
+}
+
+.portal-form a:hover {
+    color: var(--main);
+}
+
+.portal-form .form-control,
+.portal-form .form-select {
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 10px 12px;
+}
+
+.portal-form .form-control:focus,
+.portal-form .form-select:focus {
+    background-color: var(--input-bg);
+    border: 1px solid var(--sub);
+    outline: none;
+    box-shadow: none;
+}
+
+.portal-form .form-control::placeholder,
+.portal-form .form-select::placeholder {
+    color: var(--text-tertiary);
+    font-size: 12px;
+}
+
+@media screen and (min-width: 1098px) {
+    .portal-main {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .portal-div {
+        grid-template-columns: 45% 45%;
+    }
+
+    .portal-form label,
+    .portal-form .form-control,
+    .portal-form .form-select {
+        font-size: 14px;
+    }
+
+    .portal-form h6 {
+        font-size: 12px;
+    }
+}
+
+@media screen and (min-width: 767px) and (max-width: 1098px) {
+    .portal-main {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .portal-div {
+        grid-template-columns: 40% 40%;
+    }
+
+    .portal-form label,
+    .portal-form .form-control,
+    .portal-form .form-select {
+        font-size: 12px;
+    }
+
+    .portal-form h6 {
+        font-size: 10px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .portal-main {
+        width: 92%;
+        height: 100%;
+    }
+
+    .portal-div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .portal-left img {
+        height: 275px;
+    }
+
+    .portal-form label,
+    .portal-form .form-control,
+    .portal-form .form-select {
+        font-size: 12px;
+    }
+
+    .portal-div .mb-4 {
+        margin-bottom: 15px !important;
+    }
+
+    .portal-form h6 {
+        font-size: 10px;
+    }
+}

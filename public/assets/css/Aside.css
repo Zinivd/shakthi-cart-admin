@@ -54,10 +54,7 @@ aside {
     width: 0px;
 }
 
-.sidebar.collapsed .btnname img,
-.sidebar.collapsed .btnname span,
-.sidebar.collapsed .righticon i,
-.sidebar.collapsed aside .nav img {
+.sidebar.collapsed .asidebtn {
     display: none;
 }
 

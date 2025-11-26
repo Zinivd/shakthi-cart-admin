@@ -1,25 +1,26 @@
 import React from "react";
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // CSS
-import "./assets/css/Style.css";
-import "./assets/css/Aside.css";
-import "./assets/css/Navbar.css";
-import "./assets/css/Form.css";
-import "./assets/css/List.css";
-import "./assets/css/Modal.css";
-import "./assets/css/Select2.css";
-import "./assets/css/Profile.css";
-import "./assets/css/Dashboard.css";
+import "../public/assets/css/Style.css";
+import "../public/assets/css/Aside.css";
+import "../public/assets/css/Navbar.css";
+import "../public/assets/css/Form.css";
+import "../public/assets/css/List.css";
+import "../public/assets/css/Modal.css";
+import "../public/assets/css/Select2.css";
+import "../public/assets/css/Profile.css";
+import "../public/assets/css/Dashboard.css";
 
 // Layouts
 import Main from "./layouts/Main";
 import Offcanvas from "./layouts/Aside/Offcanvas";
 
-// Dashboard
+// Login / Dashboard
+import Login from "./pages/Portal/Login.jsx";
 import Dashboard from "./pages/Dashboard/Dashboard.jsx";
 
 // Products
@@ -48,29 +49,42 @@ function App() {
   return (
     <div className="App">
       <Router>
-        <ToastContainer />
+        <ToastContainer
+          theme="light"
+          position="bottom-right"
+          autoClose={2000}
+        />
         <Offcanvas />
         <Routes>
+          {/* Login */}
+          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/" element={<Main />}>
             {/* Dashboard */}
-            <Route index element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             {/* Product */}
             <Route path="/product/list" element={<ProductList />} />
             <Route path="/product/add" element={<ProductAdd />} />
             <Route path="/product/edit/:id" element={<ProductEdit />} />
             <Route path="/product/view/:id" element={<ProductView />} />
             {/* Category */}
-            <Route path="/category/list" element={<CategoryList />} />
-            <Route path="/category/add" element={<CategoryAdd />} />
-            <Route path="/category/edit/:id" element={<CategoryEdit />} />
-            <Route path="/category/view/:id" element={<CategoryView />} />
+            <Route path="/product/category/list" element={<CategoryList />} />
+            <Route path="/product/category/add" element={<CategoryAdd />} />
+            <Route
+              path="/product/category/edit/:id"
+              element={<CategoryEdit />}
+            />
+            <Route
+              path="/product/category/view/:id"
+              element={<CategoryView />}
+            />
             {/* Customer */}
             <Route path="/customer/list" element={<CustomerList />} />
             {/* Sales */}
-            <Route path="/order/list" element={<OrderList />} />
-            <Route path="/order/view/:id" element={<OrderView />} />
+            <Route path="/sales/order/list" element={<OrderList />} />
+            <Route path="/sales/order/view/:id" element={<OrderView />} />
             {/* Support */}
-            <Route path="/ticket/list" element={<TicketList />} />
+            <Route path="/support/ticket/list" element={<TicketList />} />
           </Route>
         </Routes>
       </Router>

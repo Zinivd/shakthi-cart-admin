@@ -86,7 +86,7 @@ const OrderList = () => {
                     </td>
                     <td>
                       <div className="d-flex align-items-center column-gap-2">
-                        <Link to={`/order/view/${item.id}`}>
+                        <Link to={`/sales/order/view/${item.id}`}>
                           <i className="fas fa-external-link"></i>
                         </Link>
                         <a>

@@ -8,6 +8,7 @@ import IconProduct from "./images/icon_product.png";
 import IconReport from "./images/icon_report.png";
 import IconLogout from "./images/icon_logout.png";
 import Upload from "./images/Upload.png";
+import PortalBG from "./images/Portal-BG.png";
 
 export {
     Logo,
@@ -19,5 +20,6 @@ export {
     IconProduct,
     IconReport,
     IconLogout,
-    Upload
+    Upload,
+    PortalBG
 }

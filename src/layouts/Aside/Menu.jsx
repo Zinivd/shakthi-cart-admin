@@ -7,7 +7,10 @@ import {
   IconOrder,
   IconProduct,
   IconUser,
-} from "../../assets/Assets";
+} from "../../../public/assets/Assets";
+import { logoutApi } from "../../api/api.js";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Menu = () => {
   // Track which section is open
@@ -21,19 +24,38 @@ const Menu = () => {
   const location = useLocation();
 
   // Button Active / Inactive
-  const dashboardActive = location.pathname.startsWith("/");
+  const dashboardActive = location.pathname.startsWith("/dashboard");
   const productActive = location.pathname.startsWith("/product");
-  const categoryActive = location.pathname.startsWith("/category");
   const customerActive = location.pathname.startsWith("/customer");
-  const orderActive = location.pathname.startsWith("/order");
-  const ticketActive = location.pathname.startsWith("/ticket");
+  const userActive = location.pathname.startsWith("/user");
+  const salesActive = location.pathname.startsWith("/sales");
+  const supportActive = location.pathname.startsWith("/support");
+
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    const payload = {
+      email: localStorage.getItem("email"),
+    };
+    try {
+      const res = await logoutApi(payload);
+      toast.success(res.data.message || "Logout successful!");
+      localStorage.clear();
+      // Redirect
+      navigate("/login");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Logout failed!");
+    }
+  };
 
   return (
     <>
       {/* Dashboard */}
       <li className="mb-2">
-        <NavLink to="/">
-          <button className="asidebtn mx-auto">
+        <NavLink to="/dashboard">
+          <button
+            className={`asidebtn mx-auto ${dashboardActive ? "active" : ""}`}
+          >
             <div className="btnname">
               <img src={IconDashboard} height="20px" alt="" />
               <span>Dashboard</span>
@@ -49,7 +71,7 @@ const Menu = () => {
       <li className="mb-2">
         <button
           className={`asidebtn mx-auto collapsed ${
-            openMenu === "product" ? "active" : ""
+            openMenu === "product" || productActive ? "active" : ""
           }`}
           onClick={() => toggleCollapse("product")}
           aria-expanded={openMenu === "product"}
@@ -80,7 +102,7 @@ const Menu = () => {
             </li>
             <li>
               <Link
-                to="/category/list"
+                to="/product/category/list"
                 className="d-inline-flex text-decoration-none rounded"
               >
                 Category List
@@ -94,7 +116,7 @@ const Menu = () => {
       <li className="mb-2">
         <button
           className={`asidebtn mx-auto collapsed ${
-            openMenu === "customer" ? "active" : ""
+            openMenu === "customer" || customerActive ? "active" : ""
           }`}
           onClick={() => toggleCollapse("customer")}
           aria-expanded={openMenu === "customer"}
@@ -133,7 +155,7 @@ const Menu = () => {
       <li className="mb-2">
         <button
           className={`asidebtn mx-auto collapsed ${
-            openMenu === "sales" ? "active" : ""
+            openMenu === "sales" || salesActive ? "active" : ""
           }`}
           onClick={() => toggleCollapse("sales")}
           aria-expanded={openMenu === "sales"}
@@ -156,7 +178,7 @@ const Menu = () => {
           <ul className="btn-toggle-nav list-unstyled text-start ps-5 pe-0 pb-3">
             <li>
               <Link
-                to="/order/list"
+                to="/sales/order/list"
                 className="d-inline-flex text-decoration-none rounded mt-3"
               >
                 Orders List
@@ -170,7 +192,7 @@ const Menu = () => {
       <li className="mb-2">
         <button
           className={`asidebtn mx-auto collapsed ${
-            openMenu === "support" ? "active" : ""
+            openMenu === "support" || supportActive ? "active" : ""
           }`}
           onClick={() => toggleCollapse("support")}
           aria-expanded={openMenu === "support"}
@@ -193,7 +215,7 @@ const Menu = () => {
           <ul className="btn-toggle-nav list-unstyled text-start ps-5 pe-0 pb-3">
             <li>
               <Link
-                to="/ticket/list"
+                to="/support/ticket/list"
                 className="d-inline-flex text-decoration-none rounded mt-3"
               >
                 Tickets List
@@ -205,17 +227,19 @@ const Menu = () => {
 
       {/* Logout */}
       <li className="mb-2">
-        <NavLink to="/logout">
-          <button className="asidebtn mx-auto">
-            <div className="btnname">
-              <img src={IconLogout} height="20px" alt="" />
-              <span>Logout</span>
-            </div>
-            <div className="righticon d-flex ms-auto">
-              <i className="fas fa-angle-right toggle-icon"></i>
-            </div>
-          </button>
-        </NavLink>
+        <button
+          type="submit"
+          onClick={handleLogout}
+          className="asidebtn mx-auto"
+        >
+          <div className="btnname">
+            <img src={IconLogout} height="20px" alt="" />
+            <span>Logout</span>
+          </div>
+          <div className="righticon d-flex ms-auto">
+            <i className="fas fa-angle-right toggle-icon"></i>
+          </div>
+        </button>
       </li>
     </>
   );

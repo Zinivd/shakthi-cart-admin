@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Logo } from "../../assets/Assets";
+import { Logo } from "../../../public/assets/Assets";
 import User from "./User";
 
 const Navbar = ({ collapsed, setCollapsed }) => {

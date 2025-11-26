@@ -1,5 +1,5 @@
 import React from "react";
-import { Avatar } from "../../assets/Assets";
+import { Avatar } from "../../../public/assets/Assets";
 
 const User = () => {
   return (

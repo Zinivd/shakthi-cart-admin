@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Menu from "./Menu.jsx";
-import { Logo } from "../../assets/Assets.js";
+import { Logo } from "../../../public/assets/Assets";
 
 const Aside = ({ collapsed }) => {
   return (

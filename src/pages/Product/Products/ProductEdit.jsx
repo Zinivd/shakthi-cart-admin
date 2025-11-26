@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Upload } from "../../../assets/Assets.js";
 import Select from "react-select";
 
 const ProductEdit = () => {

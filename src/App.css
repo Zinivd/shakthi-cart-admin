@@ -7,6 +7,7 @@
     border: 2px solid var(--main);
     border-radius: 5px;
     padding: 8px 20px;
+    width: 75%;
     text-transform: uppercase;
 }
 
