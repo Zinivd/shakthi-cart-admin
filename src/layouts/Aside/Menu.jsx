@@ -189,7 +189,7 @@ const Menu = () => {
       </li>
 
       {/* Support */}
-      <li className="mb-2">
+      {/* <li className="mb-2">
         <button
           className={`asidebtn mx-auto collapsed ${
             openMenu === "support" || supportActive ? "active" : ""
@@ -223,7 +223,7 @@ const Menu = () => {
             </li>
           </ul>
         </div>
-      </li>
+      </li> */}
 
       {/* Logout */}
       <li className="mb-2">

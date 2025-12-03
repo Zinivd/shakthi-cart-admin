@@ -2,6 +2,8 @@ const ENDPOINTS = {
   LOGIN: "/login",
   LOGOUT: "/logout",
   REGISTER: "/register",
+  GETUSER: "/address/list",
+  DELETEUSER: "/address/delete",
   PRODUCTS: "/products",
   PRODUCT_DETAILS: (id) => `/products/${id}`,
   ADDPRODUCT: "/product/create",

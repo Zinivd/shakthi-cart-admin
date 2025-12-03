@@ -44,6 +44,7 @@ import CategoryView from "./pages/Product/Category/CategoryView.jsx";
 
 // Customer
 import CustomerList from "./pages/Customer/CustomerList.jsx";
+import CustomerView from "./pages/Customer/CustomerView.jsx";
 
 // Sales
 import OrderList from "./pages/Sales/OrderList.jsx";
@@ -94,6 +95,7 @@ function App() {
             />
             {/* Customer */}
             <Route path="/customer/list" element={<CustomerList />} />
+            <Route path="/customer/view/:id" element={<CustomerView />} />
             {/* Sales */}
             <Route path="/sales/order/list" element={<OrderList />} />
             <Route path="/sales/order/view/:id" element={<OrderView />} />

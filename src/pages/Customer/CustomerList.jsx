@@ -1,19 +1,45 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import useTable from "../../layouts/Table/useTable.jsx";
+import { getUserDetails, deleteUserDetails } from "../../api/api.js";
+import Loader from "../../components/Loader/Loader.jsx";
+import { toast } from "react-toastify";
 
 const CustomerList = () => {
-  const [data] = useState([
-    {
-      id: 1,
-      name: "Sheik",
-      email: "sheik@gmail.com",
-      contact: "+91 8608338833",
-      package: "Basic",
-      wallet: "100",
-      status: "Active",
-    },
-  ]);
+  const [user, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const email = localStorage.getItem("email");
+
+  useEffect(() => {
+    if (!email) return;
+    const fetchData = async () => {
+      try {
+        const res = await getUserDetails(email);
+        const users = res.data.data;
+        setUsers(users);
+      } catch (error) {
+        console.error("Error loading data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleDelete = async (email) => {
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
+    try {
+      await deleteUserDetails(email);
+      toast.success("User deleted successfully");
+      fetchData();
+      // Refresh list after delete
+      setUsers((prev) => prev.filter((u) => u.email !== email));
+    } catch (error) {
+      console.error("Delete error:", error);
+      toast.error("Failed to delete user");
+    }
+  };
 
   const {
     search,
@@ -25,7 +51,9 @@ const CustomerList = () => {
     setCurrentPage,
     totalPages,
     paginatedData,
-  } = useTable(data, 5);
+  } = useTable(user, 5);
+
+  if (loading) return <Loader />;
   return (
     <div className="container-fluid px-0">
       <div className="body-head mb-3">
@@ -52,46 +80,36 @@ const CustomerList = () => {
               <tr>
                 <th>#</th>
                 <th>Name</th>
-                <th>Email ID</th>
                 <th>Contact Number</th>
-                <th>Package</th>
-                <th>Wallet Balance</th>
-                <th>Status</th>
+                <th>Address Type</th>
+                <th>City</th>
+                <th>State</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
               {paginatedData.length > 0 ? (
-                paginatedData.map((item) => (
-                  <tr key={item.id}>
-                    <td>{item.id}</td>
+                paginatedData.map((item, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
                     <td>{item.name}</td>
-                    <td>{item.email}</td>
-                    <td>{item.contact}</td>
-                    <td>{item.package}</td>
-                    <td>₹ {item.wallet}</td>
+                    <td>+91 {item.phone}</td>
+                    <td><span className="text-capitalize">{item.address_type}</span></td>
+                    <td>{item.city}</td>
                     <td>
-                      <span
-                        className={`${
-                          item.status === "Active"
-                            ? "text-success"
-                            : "text-danger"
-                        }`}
-                      >
-                        {item.status}
-                      </span>
+                      {item.state} - {item.pincode}
                     </td>
                     <td>
                       <div className="d-flex align-items-center column-gap-2">
-                        <a title="Edit">
-                          <i className="fas fa-pen-to-square"></i>
-                        </a>
-                        <a title="Inactive">
-                          <i className="fas fa-circle-xmark text-danger"></i>
-                        </a>
-                        <a title="Delete">
+                        <a
+                          onClick={() => handleDelete(item.email)}
+                          title="Delete"
+                        >
                           <i className="fas fa-trash text-danger"></i>
                         </a>
+                        <Link to={`/customer/view/${item.auth_user_id}`} title="View">
+                          <i className="fas fa-external-link"></i>
+                        </Link>
                       </div>
                     </td>
                   </tr>

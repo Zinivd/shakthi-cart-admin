@@ -1,7 +1,6 @@
 import axios from "axios";
 import BASE_URL from "./baseUrl";
 import ENDPOINTS from "./endpoints";
-import { Navigate, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 // AXIOS INSTANCE
@@ -20,7 +19,7 @@ api.interceptors.request.use((config) => {
   }
   if (!token) {
     localStorage.clear();
-    Navigate("/login");
+    window.location.href = "/login";
     return config;
   }
   config.headers["Authorization"] = `Bearer ${token}`;
@@ -36,7 +35,7 @@ api.interceptors.response.use(
     if (status === 401) {
       toast.error("Unauthorized — logging out...!");
       localStorage.clear();
-      Navigate("/login");
+      window.location.href = "/login";
     }
     return Promise.reject(error);
   }
@@ -63,6 +62,27 @@ export const getUserInfo = (email) => {
   return api.get(ENDPOINTS.USERINFO, {
     params: { email: email },
   });
+};
+
+// GET USER DETAILS
+export const getUserDetails = (email) => {
+  return api.get(ENDPOINTS.GETUSER, {
+    params: { email: email },
+  });
+};
+
+// DELETE USER DETAILS
+export const deleteUserDetails = (email) => {
+  return api.delete(ENDPOINTS.DELETEUSER, {
+    params: { email },
+  });
+};
+
+// GET CATEGORY BY ID
+export const getUserById = async (id, email) => {
+  const res = await getUserDetails(email);
+  const users = res.data?.data || [];
+  return users.find((user) => Number(user.auth_user_id) === Number(id));
 };
 
 // GET ALL PRODUCTS
