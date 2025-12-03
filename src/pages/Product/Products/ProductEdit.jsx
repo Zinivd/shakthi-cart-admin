@@ -62,6 +62,7 @@ const ProductEdit = () => {
               name=""
               id="edit_product"
               required
+              autoFocus
             />
           </div>
           <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
@@ -177,9 +178,12 @@ const ProductEdit = () => {
                   <div className="product-img-div">
                     <img
                       src={src}
-                      alt={`Preview ${index}`}
-                      className="rounded-2"
-                      style={{ objectFit: "cover", height: "75px" }}
+                      className="rounded-2 object-fit-cover"
+                      style={{
+                        height: "75px",
+                        width: "75px",
+                        objectPosition: "top",
+                      }}
                     />
                     <button
                       type="button"
@@ -250,11 +254,12 @@ const ProductEdit = () => {
 
                 <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
                   <label>Quantity</label>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     className="form-control"
-                    value={item.qty} 
-                    readOnly />
+                    value={item.qty}
+                    readOnly
+                  />
                 </div>
 
                 <div className="col-sm-12 col-md-4 col-xl-3 mb-3 d-flex align-items-end">

@@ -1,6 +1,8 @@
 import axios from "axios";
 import BASE_URL from "./baseUrl";
 import ENDPOINTS from "./endpoints";
+import { Navigate, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 // AXIOS INSTANCE
 const api = axios.create({
@@ -10,19 +12,19 @@ const api = axios.create({
 // ADD TOKEN AUTOMATICALLY
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
-  if (config.url === ENDPOINTS.LOGIN || config.url === ENDPOINTS.REGISTER) {
+  if (
+    config.url.includes(ENDPOINTS.LOGIN) ||
+    config.url.includes(ENDPOINTS.REGISTER)
+  ) {
     return config;
   }
   if (!token) {
     localStorage.clear();
-    window.location.href = "/";
+    Navigate("/login");
     return config;
   }
-  if (token) {
-    config.headers["Authorization"] = `Bearer ${token}`;
-  }
+  config.headers["Authorization"] = `Bearer ${token}`;
   config.headers["Accept"] = "application/json";
-
   return config;
 });
 
@@ -31,10 +33,10 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error?.response?.status;
-    if (status >= 400 && status <= 599) {
-      console.warn("API error:", status, "- Logging out...");
+    if (status === 401) {
+      toast.error("Unauthorized — logging out...!");
       localStorage.clear();
-      window.location.href = "/";
+      Navigate("/login");
     }
     return Promise.reject(error);
   }
@@ -76,6 +78,52 @@ export const getProductById = (id) => {
 // CREATE ORDER
 export const createOrder = (payload) => {
   return api.post(ENDPOINTS.ORDERS, payload);
+};
+
+// ADD PRODUCTS
+export const addProduct = (payload) => {
+  return api.post(ENDPOINTS.ADDPRODUCT, payload);
+};
+
+// ADD CATEGORY
+export const addCategory = (payload) => {
+  return api.post(ENDPOINTS.ADDCATEGORY, payload);
+};
+
+// UPDATE CATEGORY
+export const updateCategory = (payload) => {
+  return api.put(ENDPOINTS.EDITCATEGORY, payload);
+};
+
+// ADD SUBCATEGORY
+export const addSubcategory = (payload) => {
+  return api.post(ENDPOINTS.ADDSUBCATEGORY, payload);
+};
+
+// UPDATE SUBCATEGORY
+export const updateSubCategory = (payload) => {
+  return api.put(ENDPOINTS.EDITSUBCATEGORY, payload);
+};
+
+// GET CATEGORIES
+export const getCategories = () => {
+  return api.get(ENDPOINTS.CATEGORIES);
+};
+
+// GET CATEGORY BY ID
+export const getCategoryById = async (id) => {
+  const res = await getCategories();
+  const categories = res.data?.data || [];
+  const category = categories.find(
+    (cat) =>
+      Number(cat.id) === Number(id) || String(cat.category_id) === String(id)
+  );
+  return category;
+};
+
+// GET SUBCATEGORIES
+export const getSubcategories = () => {
+  return api.get(ENDPOINTS.SUBCATEGORIES);
 };
 
 // ERROR HANDLER

@@ -1,11 +1,30 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { getCategories, addProduct, getSubcategories } from "../../../api/api.js";
 
 const ProductAdd = () => {
+  const [categories, setCategories] = useState([]);
+  const [subcategories, setSubcategories] = useState([]);
+  const [filteredSubcategories, setFilteredSubcategories] = useState([]);
+  const [categoryId, setCategoryId] = useState("");
+  const [subCategoryId, setSubCategoryId] = useState("");
+  const [productName, setProductName] = useState("");
+  const [brand, setBrand] = useState("");
+  const [color, setColor] = useState("");
+  const [actualPrice, setActualPrice] = useState("");
+  const [sellingPrice, setSellingPrice] = useState("");
+  const [discount, setDiscount] = useState("");
+  const [flashDeal, setFlashDeal] = useState("");
+  const [description, setDescription] = useState("");
   const [size, setSize] = useState([]);
   const [qty, setQty] = useState("");
-  const [previews, setPreviews] = useState([]);
   const [rows, setRows] = useState([]);
+  const [images, setImages] = useState([]);
+  const [previews, setPreviews] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const sizeOptions = [
     { value: "S", label: "S" },
@@ -17,263 +36,376 @@ const ProductAdd = () => {
     { value: "4XL", label: "4XL" },
   ];
 
+  const colorOptions = [
+    { value: "Jet Black", label: "Jet Black" },
+    { value: "Snow White", label: "Snow White" },
+    { value: "Royal Blue", label: "Royal Blue" },
+    { value: "Crimson Red", label: "Crimson Red" },
+    { value: "Mint Green", label: "Mint Green" },
+    { value: "Sunflower Yellow", label: "Sunflower Yellow" },
+    { value: "Charcoal Grey", label: "Charcoal Grey" },
+    { value: "Peach", label: "Peach" },
+    { value: "Maroon", label: "Maroon" },
+    { value: "Lavender", label: "Lavender" },
+  ];
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res1 = await getCategories();
+        setCategories(res1.data.data);
+
+        const res2 = await getSubcategories();
+        setSubcategories(res2.data.data);
+      } catch (error) {
+        toast.error("Failed to load Dependencies!");
+      }
+    })();
+  }, []);
+
+  const handleCategoryChange = (e) => {
+    const id = e.target.value;
+    setCategoryId(id);
+    const subcat = subcategories.filter((sub) => 
+      sub.category_id === id
+    );
+    setFilteredSubcategories(subcat);
+    setSubCategoryId("");
+  };
+
   // Handle image selection
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    const newPreviews = files.map((file) => URL.createObjectURL(file));
-    setPreviews((prev) => [...prev, ...newPreviews].slice(0, 4));
+    const newImages = [...images, ...files].slice(0, 4);
+    const newPreviews = newImages.map((file) => URL.createObjectURL(file));
+    if (newImages.length > 4) {
+      toast.error("You can only upload 4 images");
+      return;
+    }
+    setImages(newImages);
+    setPreviews(newPreviews);
   };
-  // Remove image
+
   const removeImage = (index) => {
-    const updated = previews.filter((_, i) => i !== index);
-    setPreviews(updated);
+    const updatedImages = images.filter((_, i) => i !== index);
+    const updatedPreviews = previews.filter((_, i) => i !== index);
+    setImages(updatedImages);
+    setPreviews(updatedPreviews);
   };
 
-  // Append
-  const handleAdd = () => {
-    if (size.length === 0 || qty === "") return;
-
+  // Size / Qty
+  const handleAddRow = () => {
+    if (size.length === 0 || qty === "") {
+      toast.info("Select size & enter qty");
+      return;
+    }
     const newRow = {
-      size,
-      qty,
+      size: size.value,
+      qty: qty,
     };
     setRows([...rows, newRow]);
     setSize([]);
     setQty("");
   };
-  const handleRemove = (index) => {
-    const updated = rows.filter((_, i) => i !== index);
-    setRows(updated);
+
+  const handleRemoveRow = (index) => {
+    setRows(rows.filter((_, i) => i !== index));
+  };
+
+  // Save Product
+  const handleSubmit = async () => {
+    if (
+      !productName ||
+      !brand ||
+      !categoryId ||
+      !actualPrice ||
+      images.length === 0
+    ) {
+      toast.error("Please fill all required fields");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("product_name", productName);
+    formData.append("brand", brand);
+    formData.append("category_id", categoryId);
+    formData.append("sub_category_id", subCategoryId);
+    formData.append("actual_price", actualPrice);
+    formData.append("selling_price", sellingPrice);
+    formData.append("discount", discount);
+    formData.append("flash_deal", flashDeal);
+    formData.append("description", description);
+    formData.append("color", color);
+    formData.append("size_unit", JSON.stringify(rows));
+    images.forEach((file) => {
+      formData.append("images[]", file);
+    });
+    setLoading(true);
+
+    try {
+      const res = await addProduct(formData);
+      toast.success("Product added successfully!");
+      navigate("/product/list");
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <div className="container-fluid px-0">
       <div className="body-head mb-3">
         <h4>Add Product</h4>
       </div>
+
       <div className="form-div mb-3">
         <div className="row">
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
-            <label htmlFor="add_product">
+          <div className="col-lg-3 mb-3">
+            <label>
               Product Name <span>*</span>
             </label>
             <input
               type="text"
               className="form-control"
-              name=""
-              id="add_product"
-              required
+              value={productName}
+              onChange={(e) => setProductName(e.target.value)}
             />
           </div>
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
-            <label htmlFor="add_brand">
-              Brand Name <span>*</span>
+          <div className="col-lg-3 mb-3">
+            <label>
+              Brand <span>*</span>
             </label>
             <input
               type="text"
               className="form-control"
-              name=""
-              id="add_brand"
-              required
+              value={brand}
+              onChange={(e) => setBrand(e.target.value)}
             />
           </div>
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
-            <label htmlFor="add_cat">
+          <div className="col-lg-3 mb-3">
+            <label>
               Category <span>*</span>
             </label>
-            <select className="form-select" name="" id="add_cat" required>
-              <option value="" disabled selected>
+            <select
+              className="form-select"
+              value={categoryId}
+              onChange={handleCategoryChange}
+            >
+              <option value="" disabled>
                 Select Category
               </option>
+              {categories.map((cat) => (
+                <option key={cat.category_id} value={cat.category_id}>
+                  {cat.category_name}
+                </option>
+              ))}
             </select>
           </div>
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
-            <label htmlFor="add_color">
+          <div className="col-lg-3 mb-3">
+            <label>Sub Category</label>
+            <select
+              className="form-select"
+              value={subCategoryId}
+              onChange={(e) => setSubCategoryId(e.target.value)}
+            >
+              <option value="" disabled>
+                Select Subcategory
+              </option>
+              {filteredSubcategories.map((subcat) => (
+                <option
+                  key={subcat.sub_category_id}
+                  value={subcat.sub_category_id}
+                >
+                  {subcat.sub_category_name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="col-lg-3 mb-3">
+            <label>
               Color <span>*</span>
             </label>
-            <select className="form-select" name="" id="add_color" required>
-              <option value="" disabled selected>
+            <select
+              className="form-select"
+              value={color}
+              onChange={(e) => setColor(e.target.value)}
+            >
+              <option value="" disabled>
                 Select Color
               </option>
+              {colorOptions.map((colors) => (
+                <option key={colors.value} value={colors.value}>
+                  {colors.label}
+                </option>
+              ))}
             </select>
           </div>
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
-            <label htmlFor="add_act_price">
+          <div className="col-lg-3 mb-3">
+            <label>
               Actual Price <span>*</span>
             </label>
             <input
               type="number"
               className="form-control"
-              name=""
-              min="0"
-              id="add_act_price"
-              required
+              value={actualPrice}
+              onChange={(e) => setActualPrice(e.target.value)}
             />
           </div>
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
-            <label htmlFor="add_sell_price">
+          <div className="col-lg-3 mb-3">
+            <label>
               Selling Price <span>*</span>
             </label>
             <input
-              type="text"
+              type="number"
               className="form-control"
-              name=""
-              min="0"
-              id="add_sell_price"
-              required
+              value={sellingPrice}
+              onChange={(e) => setSellingPrice(e.target.value)}
             />
           </div>
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
-            <label htmlFor="add_discount">
+          <div className="col-lg-3 mb-3">
+            <label>
               Discount <span>*</span>
             </label>
             <input
               type="number"
               className="form-control"
-              name=""
-              min="0"
-              id="add_discount"
-              required
+              value={discount}
+              onChange={(e) => setDiscount(e.target.value)}
             />
           </div>
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
-            <label htmlFor="add_deal">
+          <div className="col-lg-3 mb-3">
+            <label>
               Flash Deal <span>*</span>
             </label>
-            <select className="form-select" name="" id="add_deal" required>
-              <option value="" disabled selected>
-                Select Flash Deal
-              </option>
+            <select
+              className="form-select"
+              value={flashDeal}
+              onChange={(e) => setFlashDeal(e.target.value)}
+            >
+              <option value="">Select Flash deal</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
             </select>
           </div>
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
-            <label htmlFor="add_product_descp">
+          <div className="col-lg-3 mb-3">
+            <label>
               Description <span>*</span>
             </label>
             <textarea
-              rows="1"
               className="form-control"
-              name=""
-              id="add_product_descp"
-              required
+              rows="1"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
             />
           </div>
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
-            <label htmlFor="add_product_img">
+          <div className="col-lg-3 mb-3">
+            <label>
               Product Images <span>*</span>
             </label>
             <input
               type="file"
               className="form-control"
-              id="images"
               accept="image/*"
               multiple
               onChange={handleImageChange}
             />
           </div>
-          <div className="col-sm-12 col-md-8 col-xl-6 mb-3 d-flex align-items-end">
-            <div className="d-flex align-items-center flex-wrap column-gap-5">
-              {previews.map((src, index) => (
-                <div key={index} className="w-auto mb-2">
-                  <div className="product-img-div">
-                    <img
-                      src={src}
-                      alt={`Preview ${index}`}
-                      className="rounded-2"
-                      style={{ objectFit: "cover", height: "75px" }}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removeImage(index)}
-                      className="xmarkbtn"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <div className="col-lg-6 d-flex gap-2 flex-wrap">
+            {previews.map((src, index) => (
+              <div key={index} className="product-img-div">
+                <img
+                  src={src}
+                  className="rounded-2 object-fit-cover"
+                  style={{
+                    height: "75px",
+                    width: "75px",
+                    objectPosition: "top",
+                  }}
+                />
+                <button
+                  type="button"
+                  className="xmarkbtn"
+                  onClick={() => removeImage(index)}
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Size / Qty */}
       <div className="form-div">
         <div className="row">
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
-            <label htmlFor="add_size">
+          <div className="col-lg-3 mb-3">
+            <label>
               Size <span>*</span>
             </label>
-            <Select
-              id="add_size"
-              options={sizeOptions}
-              isMulti
-              value={size}
-              onChange={(selected) => setSize(selected)}
-              placeholder="Select Size"
-            />
+            <Select options={sizeOptions} value={size} onChange={setSize} />
           </div>
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
-            <label htmlFor="add_qty">
+          <div className="col-lg-3 mb-3">
+            <label>
               Quantity <span>*</span>
             </label>
             <input
               type="number"
               className="form-control"
-              name=""
-              min="0"
-              id="add_qty"
               value={qty}
               onChange={(e) => setQty(e.target.value)}
-              required
             />
           </div>
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3 d-flex align-items-end">
-            <button type="button" className="greenbtn" onClick={handleAdd}>
+          <div className="col-lg-3 mb-3 d-flex align-items-end">
+            <button type="button" className="greenbtn" onClick={handleAddRow}>
               Add
             </button>
           </div>
         </div>
 
-        {rows.length > 0 && (
-          <div className="mt-3">
-            {rows.map((item, index) => (
-              <div key={index} className="row">
-                <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
-                  <label>Size</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={item.size.map((s) => s.label).join(", ")}
-                    readOnly
-                  />
-                </div>
+        {rows.map((item, index) => (
+          <div key={index} className="row mb-2">
+            <div className="col-lg-3">
+              <input
+                type="text"
+                className="form-control"
+                value={item.size}
+                readOnly
+              />
+            </div>
 
-                <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
-                  <label>Quantity</label>
-                  <input 
-                    type="number" 
-                    className="form-control"
-                    value={item.qty} 
-                    readOnly />
-                </div>
+            <div className="col-lg-3">
+              <input
+                type="number"
+                className="form-control"
+                value={item.qty}
+                readOnly
+              />
+            </div>
 
-                <div className="col-sm-12 col-md-4 col-xl-3 mb-3 d-flex align-items-end">
-                  <button
-                    type="button"
-                    className="redbtn"
-                    onClick={() => handleRemove(index)}
-                  >
-                    Remove
-                  </button>
-                </div>
-              </div>
-            ))}
+            <div className="col-lg-3 d-flex align-items-end">
+              <button
+                type="button"
+                className="redbtn"
+                onClick={() => handleRemoveRow(index)}
+              >
+                Remove
+              </button>
+            </div>
           </div>
-        )}
+        ))}
       </div>
 
       <div className="d-flex justify-content-start my-3">
-        <button className="formbtn">Save Product</button>
+        <button
+          type="submit"
+          className="formbtn"
+          disabled={loading}
+          onClick={handleSubmit}
+        >
+          {loading ? (
+            <span className="spinner-border spinner-border-sm"></span>
+          ) : (
+            "Save Product"
+          )}
+        </button>
       </div>
     </div>
   );

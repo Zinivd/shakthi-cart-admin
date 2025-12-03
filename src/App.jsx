@@ -1,8 +1,15 @@
 import React from "react";
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import PrivateRoute from "./PrivateRoute.jsx";
 
 // CSS
 import "../public/assets/css/Style.css";
@@ -61,7 +68,14 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Main />}>
             {/* Dashboard */}
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route
+              path="/dashboard"
+              element={
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              }
+            />
             {/* Product */}
             <Route path="/product/list" element={<ProductList />} />
             <Route path="/product/add" element={<ProductAdd />} />

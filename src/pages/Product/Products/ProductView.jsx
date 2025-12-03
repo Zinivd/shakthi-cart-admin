@@ -26,6 +26,10 @@ const ProductView = () => {
           <h5 className="mb-0">T-Shirt</h5>
         </div>
         <div className="cards mb-2">
+          <h6 className="mb-1">SubCategory</h6>
+          <h5 className="mb-0">Full Sleeve</h5>
+        </div>
+        <div className="cards mb-2">
           <h6 className="mb-1">Color</h6>
           <h5 className="mb-0">Aqua Blue</h5>
         </div>
@@ -53,14 +57,6 @@ const ProductView = () => {
           </h5>
         </div>
         <div className="cards mb-2">
-          <h6 className="mb-1">Size</h6>
-          <h5 className="mb-0">S, M, L, XL, XXL</h5>
-        </div>
-        <div className="cards mb-2">
-          <h6 className="mb-1">Quantity</h6>
-          <h5 className="mb-0">10</h5>
-        </div>
-        <div className="cards mb-2">
           <h6 className="mb-1">Description</h6>
           <h5 className="mb-0">
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. At,
@@ -74,6 +70,23 @@ const ProductView = () => {
               <i className="fas fa-image"></i>
             </a>
           </h5>
+        </div>
+        <div className="cards mb-2">
+          <h6 className="mb-1">Details</h6>
+          <table className="table table-bordered">
+            <thead>
+                <tr>
+                    <th className="py-1">Size</th>
+                    <th className="py-1">Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td className="py-1">S</td>
+                    <td className="py-1">M</td>
+                </tr>
+            </tbody>
+        </table>
         </div>
       </div>
     </div>

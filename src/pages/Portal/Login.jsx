@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Logo, PortalBG } from "../../../public/assets/Assets";
 import "../../../public/assets/css/Portal.css";
@@ -14,6 +14,14 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Already LoggedIn User
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/dashboard");
+    }
+  }, []);
 
   // Handle form submit
   const handleLogin = async (e) => {
@@ -99,7 +107,7 @@ const Login = () => {
                     style={{ opacity: loading ? 0.7 : 1 }}
                   >
                     {loading ? (
-                      <span className="spinner-border spinner-border-sm me-2"></span>
+                      <span className="spinner-border spinner-border-sm"></span>
                     ) : (
                       ""
                     )}

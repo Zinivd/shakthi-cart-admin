@@ -169,3 +169,13 @@ input[type="number"]::-ms-clear {
   border-radius: 50%;
   object-fit: cover;
 }
+
+/* Toastify CSS */
+.Toastify__toast {
+  min-height: 50px !important;
+  color: var(--main) !important;
+  font-size: 14px !important;
+  font-weight: var(--fw-md) !important;
+  font-family: var(--main-font) !important;
+  text-transform: capitalize !important;
+}

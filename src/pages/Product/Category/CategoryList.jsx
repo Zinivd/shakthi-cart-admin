@@ -1,46 +1,57 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import useTable from "../../../layouts/Table/useTable.jsx";
+import { getCategories, getSubcategories } from "../../../api/api.js";
+import Loader from "../../../components/Loader/Loader.jsx";
 
 const CategoryList = () => {
-  const [data] = useState([
-    {
-      id: 1,
-      code: "CAT001",
-      category: "Women",
-      subCategory: 3,
-      description: "Women Category",
-      status: "Active",
-    },
-    {
-      id: 2,
-      code: "CAT002",
-      category: "Men",
-      subCategory: 2,
-      description: "Men Category",
-      status: "Inactive",
-    },
-    {
-      id: 3,
-      code: "CAT003",
-      category: "Kids",
-      subCategory: 1,
-      description: "Kids Category",
-      status: "Active",
-    },
-  ]);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const catRes = await getCategories();
+        const subRes = await getSubcategories();
+
+        const categories = catRes.data.data;
+        const subcategories = subRes.data.data;
+
+        // Attach subcategory count to each category
+        const finalData = categories.map((cat) => ({
+          id: cat.category_id,
+          category: cat.category_name,
+          description: cat.description,
+          status: cat.status,
+          subCategory: subcategories.filter(
+            (sub) => sub.category_id === cat.category_id
+          ).length,
+        }));
+
+        setData(finalData);
+      } catch (error) {
+        console.error("Error loading data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const {
     search,
     setSearch,
-    sortColumn,
-    sortOrder,
-    handleSort,
     currentPage,
     setCurrentPage,
     totalPages,
     paginatedData,
   } = useTable(data, 5);
+
+  if (loading)
+    return (
+      <Loader />
+    );
   return (
     <div className="container-fluid px-0">
       <div className="body-head mb-3">
@@ -79,22 +90,22 @@ const CategoryList = () => {
             </thead>
             <tbody>
               {paginatedData.length > 0 ? (
-                paginatedData.map((item) => (
-                  <tr key={item.id}>
-                    <td>{item.id}</td>
-                    <td>{item.code}</td>
-                    <td>{item.category}</td>
-                    <td>{item.subCategory}</td>
-                    <td>{item.description}</td>
+                paginatedData.map((item, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{item.id || "-"}</td>
+                    <td>{item.category || "-"}</td>
+                    <td>{item.subCategory || "-"}</td>
+                    <td>{item.description || "-"}</td>
                     <td>
                       <span
-                        className={`${
+                        className={
                           item.status === "Active"
                             ? "text-success"
                             : "text-danger"
-                        }`}
+                        }
                       >
-                        {item.status}
+                        {item.status || "-"}
                       </span>
                     </td>
                     <td>
@@ -105,6 +116,7 @@ const CategoryList = () => {
                         >
                           <i className="fas fa-external-link"></i>
                         </Link>
+
                         <Link
                           to={`/product/category/edit/${item.id}`}
                           title="Edit"
