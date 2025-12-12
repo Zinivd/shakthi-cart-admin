@@ -16,7 +16,7 @@ const ProductAdd = () => {
   const [actualPrice, setActualPrice] = useState("");
   const [sellingPrice, setSellingPrice] = useState("");
   const [discount, setDiscount] = useState("");
-  const [flashDeal, setFlashDeal] = useState("");
+  // const [flashDeal, setFlashDeal] = useState("");
   const [description, setDescription] = useState("");
   const [size, setSize] = useState([]);
   const [qty, setQty] = useState("");
@@ -132,7 +132,7 @@ const ProductAdd = () => {
     formData.append("actual_price", actualPrice);
     formData.append("selling_price", sellingPrice);
     formData.append("discount", discount);
-    formData.append("flash_deal", flashDeal);
+    // formData.append("flash_deal", flashDeal);
     formData.append("description", description);
     formData.append("color", color);
     formData.append("size_unit", JSON.stringify(rows));
@@ -272,7 +272,7 @@ const ProductAdd = () => {
               onChange={(e) => setDiscount(e.target.value)}
             />
           </div>
-          <div className="col-lg-3 mb-3">
+          {/* <div className="col-lg-3 mb-3">
             <label>
               Flash Deal <span>*</span>
             </label>
@@ -285,7 +285,7 @@ const ProductAdd = () => {
               <option value="yes">Yes</option>
               <option value="no">No</option>
             </select>
-          </div>
+          </div> */}
           <div className="col-lg-3 mb-3">
             <label>
               Description <span>*</span>

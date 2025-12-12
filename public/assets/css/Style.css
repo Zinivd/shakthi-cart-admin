@@ -38,6 +38,16 @@
     margin-bottom: 0px;
 }
 
+.body-head .form-select,
+.body-head .form-control {
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: var(--text-primary);
+    font-weight: var(--fw-md);
+    font-size: 12px;
+    width: 125px;
+}
+
 @media screen and (min-width: 1140px) {
 
     /* Main Side-Body */

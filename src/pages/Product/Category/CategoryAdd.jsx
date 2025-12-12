@@ -5,7 +5,6 @@ import { addCategory, addSubcategory } from "../../../api/api.js";
 
 const CategoryAdd = () => {
   const [category, setCategory] = useState("");
-  const [description, setDescription] = useState("");
   const [subcategories, setSubcategories] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [loading, setLoading] = useState(false);
@@ -26,7 +25,7 @@ const CategoryAdd = () => {
 
   // SAVE CATEGORY + SUBCATEGORIES
   const handleSubmit = async () => {
-    if (!category || !description) {
+    if (!category) {
       toast.error("Please fill all required fields");
       return;
     }
@@ -34,12 +33,8 @@ const CategoryAdd = () => {
     setLoading(true);
 
     try {
-      // STEP 1: CREATE CATEGORY
-      const catPayload = {
-        category_name: category,
-        description: description,
-      };
-
+      // CREATE CATEGORY
+      const catPayload = { category_name: category };
       const catRes = await addCategory(catPayload);
       const categoryId = catRes?.data?.data?.category_id;
 
@@ -51,21 +46,21 @@ const CategoryAdd = () => {
 
       toast.success("Category Created Successfully!");
 
-      // STEP 2: INSERT SUBCATEGORIES (one by one)
-      for (const sub of subcategories) {
-        await addSubcategory({
+      // CREATE SUBCATEGORIES
+      if (subcategories.length > 0) {
+        const subPayload = {
           category_id: categoryId,
-          sub_category_name: sub,
-        });
+          subcategories: subcategories.map((name) => ({
+            sub_category_name: name,
+          })),
+        };
+
+        await addSubcategory(subPayload);
+        toast.success("Subcategories Created Successfully!");
       }
 
-      toast.success("Subcategories Created Successfully!");
-
-      // RESET FORM
       setCategory("");
-      setDescription("");
       setSubcategories([]);
-
       navigate("/product/category/list");
     } catch (err) {
       toast.error(err.response?.data?.message || "Something Went Wrong!");
@@ -93,27 +88,21 @@ const CategoryAdd = () => {
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               autoFocus
-            />
-          </div>
-
-          <div className="col-lg-3 mb-3">
-            <label>
-              Description <span>*</span>
-            </label>
-            <textarea
-              className="form-control"
-              rows="1"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              required
             />
           </div>
         </div>
+      </div>
+      <div className="body-head mb-3">
+        <h4>Add Sub Category</h4>
       </div>
       {/* SUBCATEGORY INPUT */}
       <div className="form-div">
         <div className="row mb-2">
           <div className="col-lg-3 mb-2">
-            <label>Sub Category</label>
+            <label>
+              Sub Category <span>*</span>
+            </label>
             <input
               type="text"
               className="form-control"

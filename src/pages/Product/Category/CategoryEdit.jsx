@@ -12,7 +12,6 @@ const CategoryEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [categoryName, setCategoryName] = useState("");
-  const [description, setDescription] = useState("");
   const [subcategories, setSubcategories] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [loading, setLoading] = useState(true);
@@ -23,7 +22,6 @@ const CategoryEdit = () => {
       try {
         const data = await getCategoryById(id);
         setCategoryName(data.category_name);
-        setDescription(data.description);
         setSubcategories(data.subcategories);
       } catch (err) {
         toast.error("Failed to load category");
@@ -57,24 +55,25 @@ const CategoryEdit = () => {
     setFormLoad(true);
 
     try {
+      // 1️⃣ Update Category Name
       await updateCategory({
         category_id: id,
         category_name: categoryName,
-        description,
       });
 
-      for (const sub of subcategories) {
-        await updateSubCategory({
-          id: sub.id,
-          sub_category_id: sub.sub_category_id,
+      // 2️⃣ Update + Create Subcategories in one request
+      await updateSubCategory({
+        category_id: id,
+        subcategories: subcategories.map((sub) => ({
+          sub_category_id: sub.sub_category_id || null, // null → create
           sub_category_name: sub.sub_category_name,
-          category_id: id,
-        });
-      }
+        })),
+      });
 
       toast.success("Category Updated Successfully!");
-      navigate('/product/category/list');
+      navigate("/product/category/list");
     } catch (err) {
+      console.log(err);
       toast.error("Update failed!");
     } finally {
       setFormLoad(false);
@@ -88,36 +87,32 @@ const CategoryEdit = () => {
       <div className="body-head mb-3">
         <h4>Edit Category</h4>
       </div>
-
       {/* CATEGORY INPUTS */}
       <div className="form-div mb-3">
         <div className="row">
           <div className="col-lg-3 mb-3">
-            <label>Category</label>
+            <label>
+              Category <span>*</span>
+            </label>
             <input
               className="form-control"
               value={categoryName}
               onChange={(e) => setCategoryName(e.target.value)}
-            />
-          </div>
-
-          <div className="col-lg-3 mb-3">
-            <label>Description</label>
-            <textarea
-              className="form-control"
-              rows="1"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              required
             />
           </div>
         </div>
       </div>
-
+      <div className="body-head mb-3">
+        <h4>Edit Sub Category</h4>
+      </div>
       {/* SUBCATEGORY INPUT */}
       <div className="form-div">
         <div className="row mb-2">
           <div className="col-lg-3 mb-2">
-            <label>Subcategories</label>
+            <label>
+              Subcategories <span>*</span>
+            </label>
             <input
               type="text"
               className="form-control"

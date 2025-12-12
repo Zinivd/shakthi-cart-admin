@@ -58,11 +58,6 @@ const CategoryView = () => {
         </div>
 
         <div className="cards mb-2">
-          <h6 className="mb-2">Description</h6>
-          <h5 className="mb-0">{category.description || "-"}</h5>
-        </div>
-
-        <div className="cards mb-2">
           <h6 className="mb-2">Status</h6>
           <h5 className="mb-0">
             <span

@@ -21,7 +21,6 @@ const CategoryList = () => {
         const finalData = categories.map((cat) => ({
           id: cat.category_id,
           category: cat.category_name,
-          description: cat.description,
           status: cat.status,
           subCategory: subcategories.filter(
             (sub) => sub.category_id === cat.category_id
@@ -83,7 +82,6 @@ const CategoryList = () => {
                 <th>Code</th>
                 <th>Category</th>
                 <th>SubCategory</th>
-                <th>Description</th>
                 <th>Status</th>
                 <th>Action</th>
               </tr>
@@ -96,7 +94,6 @@ const CategoryList = () => {
                     <td>{item.id || "-"}</td>
                     <td>{item.category || "-"}</td>
                     <td>{item.subCategory || "-"}</td>
-                    <td>{item.description || "-"}</td>
                     <td>
                       <span
                         className={

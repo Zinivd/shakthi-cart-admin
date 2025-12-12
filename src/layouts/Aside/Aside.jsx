@@ -8,7 +8,7 @@ const Aside = ({ collapsed }) => {
     <aside className={`sidebar ${collapsed ? "collapsed" : ""}`}>
       <div className="flex-shrink-0 sidebar">
         <div className={`${collapsed ? 'd-none' : 'd-flex'} nav col-md-12`}>
-          <Link to="/" className="mx-auto">
+          <Link to="/dashboard" className="mx-auto">
             <img src={Logo} alt="" height=" 50px" className="mx-auto" />
           </Link>
         </div>

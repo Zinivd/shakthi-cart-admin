@@ -1,32 +1,41 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { getProducts } from "../../../api/api.js";
 import useTable from "../../../layouts/Table/useTable.jsx";
+import Loader from "../../../components/Loader/Loader.jsx";
+import { toast } from "react-toastify";
 
 const ProductList = () => {
-  const [data] = useState([
-    {
-      id: 1,
-      code: "PRDT001",
-      name: "T-Shirt",
-      actual: "1000",
-      selling: "990",
-      stock: "10",
-      published: "Yes",
-      availability: "In Stock",
-    },
-  ]);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await getProducts();
+        const products = res.data?.data || [];
+        setData(products);
+      } catch (error) {
+        toast.error("Failed to load products");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const {
     search,
     setSearch,
-    sortColumn,
-    sortOrder,
-    handleSort,
     currentPage,
     setCurrentPage,
     totalPages,
     paginatedData,
   } = useTable(data, 5);
+
+  if (loading) return <Loader />;
+
   return (
     <div className="container-fluid px-0">
       <div className="body-head mb-3">
@@ -35,6 +44,7 @@ const ProductList = () => {
           <button className="listbtn">Add Product</button>
         </Link>
       </div>
+
       <div className="list-table">
         <div className="filter-container mb-2">
           <div className="filter-container-start">
@@ -50,50 +60,47 @@ const ProductList = () => {
             />
           </div>
         </div>
+
         <div className="table-wrapper">
           <table className="table">
             <thead>
               <tr>
                 <th>#</th>
                 <th>Code</th>
+                <th>Brand</th>
                 <th>Name</th>
+                <th>Category</th>
                 <th>Info</th>
                 <th>Stock</th>
-                <th>Published</th>
-                <th>Availability</th>
                 <th>Action</th>
               </tr>
             </thead>
+
             <tbody>
               {paginatedData.length > 0 ? (
-                paginatedData.map((item) => (
+                paginatedData.map((item, i) => (
                   <tr key={item.id}>
-                    <td>{item.id}</td>
-                    <td>{item.code}</td>
-                    <td>{item.name}</td>
+                    <td>{i + 1}</td>
+                    <td>{item.product_id}</td>
+                    <td>{item.brand}</td>
+                    <td>{item.product_name}</td>
+                    <td>{item.category_name}</td>
                     <td>
-                      Acutal - <span>₹ {item.actual}</span> <br />
-                      Selling - <span>₹ {item.selling}</span>
+                      Actual - <span>₹ {item.actual_price}</span> <br />
+                      Selling - <span>₹ {item.selling_price}</span> <br />
+                      Discount - <span>₹ {item.discount}</span>
                     </td>
-                    <td>{item.stock}</td>
-                    <td>{item.published}</td>
                     <td>
-                      <span
-                        className={`${
-                          item.availability === "In Stock"
-                            ? "text-success"
-                            : "text-danger"
-                        }`}
-                      >
-                        {item.availability}
-                      </span>
+                      {item.size_unit
+                        ?.map((s) => `${s.size} - ${s.qty}`)
+                        .join(", ")}
                     </td>
                     <td>
                       <div className="d-flex align-items-center gap-2">
-                        <Link to={`/product/view/${item.id}`} title="View">
+                        <Link to={`/product/view/${item.product_id}`}>
                           <i className="fas fa-external-link"></i>
                         </Link>
-                        <Link to={`/product/edit/${item.id}`} title="Edit">
+                        <Link to={`/product/edit/${item.product_id}`}>
                           <i className="fas fa-pen-to-square"></i>
                         </Link>
                       </div>
@@ -111,7 +118,6 @@ const ProductList = () => {
           </table>
         </div>
 
-        {/* Pagination */}
         <div className="paginate-div mt-3">
           <span>
             Page {currentPage} of {totalPages}

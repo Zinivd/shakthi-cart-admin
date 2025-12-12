@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import useTable from "../../layouts/Table/useTable.jsx";
-import { getUserDetails, deleteUserDetails } from "../../api/api.js";
+import { getCustomer, deleteCustomer } from "../../api/api.js";
 import Loader from "../../components/Loader/Loader.jsx";
 import { toast } from "react-toastify";
 
@@ -15,7 +15,7 @@ const CustomerList = () => {
     if (!email) return;
     const fetchData = async () => {
       try {
-        const res = await getUserDetails(email);
+        const res = await getCustomer(email);
         const users = res.data.data;
         setUsers(users);
       } catch (error) {
@@ -27,14 +27,28 @@ const CustomerList = () => {
     fetchData();
   }, []);
 
-  const handleDelete = async (email) => {
+  useEffect(() => {
+    if (!email) return;
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const res = await getCustomer(email);
+      setUsers(res.data.data);
+    } catch (error) {
+      console.error("Error loading data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (unique_id) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     try {
-      await deleteUserDetails(email);
+      await deleteCustomer(unique_id);
       toast.success("User deleted successfully");
-      fetchData();
-      // Refresh list after delete
-      setUsers((prev) => prev.filter((u) => u.email !== email));
+      setUsers((prev) => prev.filter((u) => u.unique_id !== unique_id));
     } catch (error) {
       console.error("Delete error:", error);
       toast.error("Failed to delete user");
@@ -79,11 +93,11 @@ const CustomerList = () => {
             <thead>
               <tr>
                 <th>#</th>
+                <th>Code</th>
                 <th>Name</th>
                 <th>Contact Number</th>
-                <th>Address Type</th>
-                <th>City</th>
-                <th>State</th>
+                <th>Email ID</th>
+                <th>Type</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -92,22 +106,25 @@ const CustomerList = () => {
                 paginatedData.map((item, index) => (
                   <tr key={index}>
                     <td>{index + 1}</td>
+                    <td>{item.unique_id}</td>
                     <td>{item.name}</td>
                     <td>+91 {item.phone}</td>
-                    <td><span className="text-capitalize">{item.address_type}</span></td>
-                    <td>{item.city}</td>
+                    <td>{item.email}</td>
                     <td>
-                      {item.state} - {item.pincode}
+                      <span className="text-capitalize">{item.user_type}</span>
                     </td>
                     <td>
                       <div className="d-flex align-items-center column-gap-2">
                         <a
-                          onClick={() => handleDelete(item.email)}
+                          onClick={() => handleDelete(item.unique_id)}
                           title="Delete"
                         >
                           <i className="fas fa-trash text-danger"></i>
                         </a>
-                        <Link to={`/customer/view/${item.auth_user_id}`} title="View">
+                        <Link
+                          to={`/customer/view/${item.unique_id}`}
+                          title="View"
+                        >
                           <i className="fas fa-external-link"></i>
                         </Link>
                       </div>

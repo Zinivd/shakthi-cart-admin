@@ -1,238 +1,439 @@
-import React, { useState, useEffect } from "react";
-import Select from "react-select";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { getProductById, editProduct } from "../../../api/api.js";
+import api from "../../../api/api.js";
+import ENDPOINTS from "../../../api/endpoints.js";
+import { toast } from "react-toastify";
+import Loader from "../../../components/Loader/Loader.jsx";
 
 const ProductEdit = () => {
-  const [size, setSize] = useState([]);
-  const [qty, setQty] = useState("");
-  const [previews, setPreviews] = useState([]);
-  const [rows, setRows] = useState([]);
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-  const sizeOptions = [
-    { value: "S", label: "S" },
-    { value: "M", label: "M" },
-    { value: "L", label: "L" },
-    { value: "XL", label: "XL" },
-    { value: "XXL", label: "XXL" },
-    { value: "3XL", label: "3XL" },
-    { value: "4XL", label: "4XL" },
+  const [loading, setLoading] = useState(true);
+  const [formLoad, setFormLoad] = useState(false);
+
+  const [productName, setProductName] = useState("");
+  const [brand, setBrand] = useState("");
+  const [category, setCategory] = useState("");
+  const [subCategory, setSubCategory] = useState("");
+  const [color, setColor] = useState("");
+  const [actualPrice, setActualPrice] = useState("");
+  const [sellingPrice, setSellingPrice] = useState("");
+  const [discount, setDiscount] = useState("");
+  const [description, setDescription] = useState("");
+
+  const [oldImages, setOldImages] = useState([]);
+  const [deletedOldImages, setDeletedOldImages] = useState([]);
+  const [newImages, setNewImages] = useState([]);
+  const [previews, setPreviews] = useState([]);
+
+  const [rows, setRows] = useState([]);
+  const [sizeValue, setSizeValue] = useState("");
+  const [qty, setQty] = useState("");
+
+  const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
+
+  const sizeOptions = ["S", "M", "L", "XL", "XXL", "3XL", "4XL"];
+
+  const colorOptions = [
+    "Jet Black",
+    "Snow White",
+    "Royal Blue",
+    "Crimson Red",
+    "Mint Green",
+    "Sunflower Yellow",
+    "Charcoal Grey",
+    "Peach",
+    "Maroon",
+    "Lavender",
   ];
 
-  // Handle image selection
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    const newPreviews = files.map((file) => URL.createObjectURL(file));
-    setPreviews((prev) => [...prev, ...newPreviews].slice(0, 4));
-  };
-  // Remove image
-  const removeImage = (index) => {
-    const updated = previews.filter((_, i) => i !== index);
-    setPreviews(updated);
-  };
+  // Fetch product, categories, subcategories
+  useEffect(() => {
+    const fetchAll = async () => {
+      try {
+        const res = await getProductById(id);
+        const product = Array.isArray(res.data?.data)
+          ? res.data.data[0]
+          : res.data?.data;
+        if (!product) {
+          toast.error("Product not found");
+          setLoading(false);
+          return;
+        }
 
-  // Append
-  const handleAdd = () => {
-    if (size.length === 0 || qty === "") return;
+        setProductName(product.product_name || "");
+        setBrand(product.brand || "");
+        setCategory(product.category_id || "");
+        setSubCategory(product.sub_category_id || "");
+        setColor(product.color || "");
+        setActualPrice(product.actual_price || "");
+        setSellingPrice(product.selling_price || "");
+        setDiscount(product.discount || "");
+        setDescription(product.description || "");
+        setOldImages(product.images || []);
+        setRows(
+          (product.size_unit || []).map((s) => ({
+            size: s.size,
+            qty: s.qty,
+          }))
+        );
 
-    const newRow = {
-      size,
-      qty,
+        const [catRes, subRes] = await Promise.all([
+          api.get(ENDPOINTS.CATEGORIES),
+          api.get(ENDPOINTS.SUBCATEGORIES),
+        ]);
+        setCategories(catRes.data?.data || []);
+        setSubCategories(subRes.data?.data || []);
+      } catch (err) {
+        console.error(err);
+        toast.error("Failed to fetch product");
+      } finally {
+        setLoading(false);
+      }
     };
-    setRows([...rows, newRow]);
-    setSize([]);
+
+    fetchAll();
+  }, [id]);
+
+  // Image handlers
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    setNewImages((prev) => [...prev, ...files]);
+    setPreviews((prev) => [
+      ...prev,
+      ...files.map((f) => URL.createObjectURL(f)),
+    ]);
+  };
+
+  const removeNewImage = (index) => {
+    setNewImages((prev) => prev.filter((_, i) => i !== index));
+    setPreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const removeOldImage = (index) => {
+    setDeletedOldImages((prev) => [...prev, oldImages[index]]);
+    setOldImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  // Size / Quantity handlers
+  const handleAddRow = () => {
+    if (!sizeValue || qty === "") {
+      toast.error("Select size and enter quantity");
+      return;
+    }
+    setRows((prev) => [...prev, { size: sizeValue, qty: Number(qty) }]);
+    setSizeValue("");
     setQty("");
   };
-  const handleRemove = (index) => {
-    const updated = rows.filter((_, i) => i !== index);
-    setRows(updated);
+
+  const handleRemoveRow = (index) => {
+    setRows((prev) => prev.filter((_, i) => i !== index));
   };
+
+  // Update product
+  const handleUpdate = async () => {
+    setFormLoad(true);
+    const formData = new FormData();
+
+    formData.append("product_id", id);
+    formData.append("product_name", productName);
+    formData.append("brand", brand);
+    formData.append("category_id", category);
+    formData.append("sub_category_id", subCategory);
+    formData.append("color", color);
+    formData.append("actual_price", actualPrice);
+    formData.append("selling_price", sellingPrice);
+    formData.append("discount", discount);
+    formData.append("description", description);
+
+    // Sizes
+    rows.forEach((r, i) => {
+      formData.append(`sizes[${i}][size]`, r.size);
+      formData.append(`sizes[${i}][qty]`, r.qty);
+    });
+
+    // Only include old images that are not deleted
+    oldImages.forEach((img, i) => {
+      formData.append(`old_images[${i}]`, img);
+    });
+
+    // New images
+    newImages.forEach((file) => {
+      formData.append("images[]", file);
+    });
+
+    try {
+      await editProduct(formData);
+      toast.success("Product updated successfully");
+      navigate("/product/list");
+    } catch (err) {
+      console.error(err);
+      toast.error("Update failed");
+    } finally {
+      setFormLoad(false);
+    }
+  };
+
+  if (loading) return <Loader />;
+
   return (
     <div className="container-fluid px-0">
       <div className="body-head mb-3">
         <h4>Edit Product</h4>
       </div>
+
       <div className="form-div mb-3">
         <div className="row">
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
-            <label htmlFor="edit_product">
+          {/* Product Info */}
+          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+            <label>
               Product Name <span>*</span>
             </label>
             <input
               type="text"
               className="form-control"
-              name=""
-              id="edit_product"
+              value={productName}
+              onChange={(e) => setProductName(e.target.value)}
               required
-              autoFocus
             />
           </div>
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
-            <label htmlFor="edit_brand">
+
+          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+            <label>
               Brand Name <span>*</span>
             </label>
             <input
               type="text"
               className="form-control"
-              name=""
-              id="edit_brand"
+              value={brand}
+              onChange={(e) => setBrand(e.target.value)}
               required
             />
           </div>
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
-            <label htmlFor="edit_cat">
+
+          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+            <label>
               Category <span>*</span>
             </label>
-            <select className="form-select" name="" id="edit_cat" required>
-              <option value="" disabled selected>
-                Select Category
-              </option>
+            <select
+              className="form-select"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              required
+            >
+              <option value="">Select Category</option>
+              {categories.map((cat) => (
+                <option key={cat.category_id} value={cat.category_id}>
+                  {cat.category_name}
+                </option>
+              ))}
             </select>
           </div>
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
-            <label htmlFor="edit_color">
+
+          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+            <label>
+              Sub Category <span>*</span>
+            </label>
+            <select
+              className="form-select"
+              value={subCategory}
+              onChange={(e) => setSubCategory(e.target.value)}
+              required
+            >
+              <option value="">Select Sub Category</option>
+              {subCategories.map((subcat) => (
+                <option
+                  key={subcat.sub_category_id}
+                  value={subcat.sub_category_id}
+                >
+                  {subcat.sub_category_name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+            <label>
               Color <span>*</span>
             </label>
-            <select className="form-select" name="" id="edit_color" required>
-              <option value="" disabled selected>
-                Select Color
-              </option>
+            <select
+              className="form-select"
+              value={color}
+              onChange={(e) => setColor(e.target.value)}
+              required
+            >
+              <option value="">Select Color</option>
+              {colorOptions.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
             </select>
           </div>
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
-            <label htmlFor="edit_act_price">
+
+          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+            <label>
               Actual Price <span>*</span>
             </label>
             <input
               type="number"
-              className="form-control"
-              name=""
               min="0"
-              id="edit_act_price"
+              className="form-control"
+              value={actualPrice}
+              onChange={(e) => setActualPrice(e.target.value)}
               required
             />
           </div>
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
-            <label htmlFor="edit_sell_price">
+
+          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+            <label>
               Selling Price <span>*</span>
             </label>
             <input
-              type="text"
-              className="form-control"
-              name=""
+              type="number"
               min="0"
-              id="edit_sell_price"
+              className="form-control"
+              value={sellingPrice}
+              onChange={(e) => setSellingPrice(e.target.value)}
               required
             />
           </div>
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
-            <label htmlFor="edit_discount">
+
+          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+            <label>
               Discount <span>*</span>
             </label>
             <input
               type="number"
-              className="form-control"
-              name=""
               min="0"
-              id="edit_discount"
+              className="form-control"
+              value={discount}
+              onChange={(e) => setDiscount(e.target.value)}
               required
             />
           </div>
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
-            <label htmlFor="edit_deal">
-              Flash Deal <span>*</span>
-            </label>
-            <select className="form-select" name="" id="edit_deal" required>
-              <option value="" disabled selected>
-                Select Flash Deal
-              </option>
-            </select>
-          </div>
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
-            <label htmlFor="edit_product_descp">
+
+          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+            <label>
               Description <span>*</span>
             </label>
             <textarea
               rows="1"
               className="form-control"
-              name=""
-              id="edit_product_descp"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
               required
             />
           </div>
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
-            <label htmlFor="edit_product_img">
+
+          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+            <label>
               Product Images <span>*</span>
             </label>
             <input
               type="file"
               className="form-control"
-              id="images"
               accept="image/*"
               multiple
               onChange={handleImageChange}
             />
           </div>
-          <div className="col-sm-12 col-md-8 col-xl-6 mb-3 d-flex align-items-end">
-            <div className="d-flex align-items-center flex-wrap column-gap-5">
-              {previews.map((src, index) => (
-                <div key={index} className="w-auto mb-2">
-                  <div className="product-img-div">
-                    <img
-                      src={src}
-                      className="rounded-2 object-fit-cover"
-                      style={{
-                        height: "75px",
-                        width: "75px",
-                        objectPosition: "top",
-                      }}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removeImage(index)}
-                      className="xmarkbtn"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+
+          {/* Old images */}
+          <div className="col-sm-12 col-md-6 col-xl-6 d-flex gap-2 flex-wrap mb-3">
+            {oldImages.map((img, i) => (
+              <div key={i} className="position-relative">
+                <img
+                  src={img}
+                  alt={`old-${i}`}
+                  style={{
+                    height: "75px",
+                    width: "75px",
+                    objectFit: "cover",
+                    borderRadius: 4,
+                  }}
+                />
+                <button
+                  type="button"
+                  className="xmarkbtn"
+                  style={{ position: "absolute", right: 2, top: 2 }}
+                  onClick={() => removeOldImage(i)}
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+
+            {previews.map((src, i) => (
+              <div key={i} className="position-relative">
+                <img
+                  src={src}
+                  alt={`new-${i}`}
+                  style={{
+                    height: "75px",
+                    width: "75px",
+                    objectFit: "cover",
+                    borderRadius: 4,
+                  }}
+                />
+                <button
+                  type="button"
+                  className="xmarkbtn"
+                  style={{ position: "absolute", right: 2, top: 2 }}
+                  onClick={() => removeNewImage(i)}
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Size / Qty */}
-      <div className="form-div">
-        <div className="row">
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
-            <label htmlFor="edit_size">
+      {/* Size / Quantity */}
+      <div className="form-div mb-3">
+        <div className="row align-items-end">
+          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+            <label>
               Size <span>*</span>
             </label>
-            <Select
-              id="edit_size"
-              options={sizeOptions}
-              isMulti
-              value={size}
-              onChange={(selected) => setSize(selected)}
-              placeholder="Select Size"
-            />
+            <select
+              className="form-select"
+              value={sizeValue}
+              onChange={(e) => setSizeValue(e.target.value)}
+            >
+              <option value="">Select Size</option>
+              {sizeOptions.map((s) => (
+                <option
+                  key={s}
+                  value={s}
+                  disabled={rows.some((r) => r.size === s)}
+                >
+                  {s}
+                </option>
+              ))}
+            </select>
           </div>
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
-            <label htmlFor="edit_qty">
+
+          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+            <label>
               Quantity <span>*</span>
             </label>
             <input
               type="number"
-              className="form-control"
-              name=""
               min="0"
-              id="edit_qty"
+              className="form-control"
               value={qty}
               onChange={(e) => setQty(e.target.value)}
-              required
             />
           </div>
-          <div className="col-sm-12 col-md-4 col-lg-3 mb-3 d-flex align-items-end">
-            <button type="button" className="greenbtn" onClick={handleAdd}>
+
+          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+            <button type="button" className="greenbtn" onClick={handleAddRow}>
               Add
             </button>
           </div>
@@ -244,12 +445,22 @@ const ProductEdit = () => {
               <div key={index} className="row">
                 <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
                   <label>Size</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={item.size.map((s) => s.label).join(", ")}
-                    readOnly
-                  />
+                  <select
+                    className="form-select"
+                    value={item.size}
+                    onChange={(e) => {
+                      const updatedRows = rows.map((r, i) =>
+                        i === index ? { ...r, size: e.target.value } : r
+                      );
+                      setRows(updatedRows);
+                    }}
+                  >
+                    {sizeOptions.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
@@ -258,7 +469,12 @@ const ProductEdit = () => {
                     type="number"
                     className="form-control"
                     value={item.qty}
-                    readOnly
+                    onChange={(e) => {
+                      const updatedRows = rows.map((r, i) =>
+                        i === index ? { ...r, qty: Number(e.target.value) } : r
+                      );
+                      setRows(updatedRows);
+                    }}
                   />
                 </div>
 
@@ -266,7 +482,7 @@ const ProductEdit = () => {
                   <button
                     type="button"
                     className="redbtn"
-                    onClick={() => handleRemove(index)}
+                    onClick={() => handleRemoveRow(index)}
                   >
                     Remove
                   </button>
@@ -277,8 +493,14 @@ const ProductEdit = () => {
         )}
       </div>
 
-      <div className="d-flex justify-content-start my-3">
-        <button className="formbtn">Update Product</button>
+      <div className="mb-3">
+        <button className="formbtn" disabled={formLoad} onClick={handleUpdate}>
+          {formLoad ? (
+            <span className="spinner-border spinner-border-sm"></span>
+          ) : (
+            "Update Product"
+          )}
+        </button>
       </div>
     </div>
   );

@@ -52,6 +52,7 @@ import OrderView from "./pages/Sales/OrderView.jsx";
 
 // Support
 import TicketList from "./pages/Support/TicketList.jsx";
+import OrderViewOld from "./pages/Sales/OrderViewOld.jsx";
 
 function App() {
   return (
@@ -99,6 +100,7 @@ function App() {
             {/* Sales */}
             <Route path="/sales/order/list" element={<OrderList />} />
             <Route path="/sales/order/view/:id" element={<OrderView />} />
+            <Route path="/sales/order/viewOld/:id" element={<OrderViewOld />} />
             {/* Support */}
             <Route path="/support/ticket/list" element={<TicketList />} />
           </Route>

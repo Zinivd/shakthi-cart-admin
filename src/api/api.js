@@ -8,12 +8,13 @@ const api = axios.create({
   baseURL: BASE_URL,
 });
 
-// ADD TOKEN AUTOMATICALLY
+// API CALLS
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (
-    config.url.includes(ENDPOINTS.LOGIN) ||
-    config.url.includes(ENDPOINTS.REGISTER)
+    config.url &&
+    (config.url.includes(ENDPOINTS.LOGIN) ||
+      config.url.includes(ENDPOINTS.REGISTER))
   ) {
     return config;
   }
@@ -64,45 +65,56 @@ export const getUserInfo = (email) => {
   });
 };
 
-// GET USER DETAILS
-export const getUserDetails = (email) => {
-  return api.get(ENDPOINTS.GETUSER, {
+// GET CUSTOMER DETAILS
+export const getCustomer = (email) => {
+  return api.get(ENDPOINTS.GETCUSTOMER, {
     params: { email: email },
   });
 };
 
-// DELETE USER DETAILS
-export const deleteUserDetails = (email) => {
-  return api.delete(ENDPOINTS.DELETEUSER, {
-    params: { email },
+// DELETE CUUSTOMER DETAILS
+export const deleteCustomer = (unique_id) => {
+  return api.delete(ENDPOINTS.DELETECUSTOMER, {
+    data: { unique_id },
   });
 };
 
-// GET CATEGORY BY ID
-export const getUserById = async (id, email) => {
-  const res = await getUserDetails(email);
-  const users = res.data?.data || [];
-  return users.find((user) => Number(user.auth_user_id) === Number(id));
+// GET CUSTOMER BY ID
+export const getCustomerById = (unique_id) => {
+  return api.get(ENDPOINTS.GETCUSTOMERBYID, {
+    params: { unique_id },
+  });
+};
+
+// GET CUSTOMER ADDRESS
+export const getCustomerAddress = (user_id) => {
+  return api.get(ENDPOINTS.GETADDRESS, {
+    params: { user_id },
+  });
 };
 
 // GET ALL PRODUCTS
 export const getProducts = () => {
-  return api.get(ENDPOINTS.PRODUCTS);
+  return api.get(ENDPOINTS.GETPRODUCTS);
 };
 
 // GET PRODUCT BY ID
-export const getProductById = (id) => {
-  return api.get(ENDPOINTS.PRODUCT_DETAILS(id));
-};
-
-// CREATE ORDER
-export const createOrder = (payload) => {
-  return api.post(ENDPOINTS.ORDERS, payload);
+export const getProductById = async (productId) => {
+  return api.get(`${ENDPOINTS.GETPRODUCTBYID}`, {
+    params: { product_id: productId },
+  });
 };
 
 // ADD PRODUCTS
 export const addProduct = (payload) => {
   return api.post(ENDPOINTS.ADDPRODUCT, payload);
+};
+
+// EDIT PRODUCTS
+export const editProduct = (payload) => {
+  return api.post(ENDPOINTS.EDITPRODUCT, payload, {
+    headers: { "Content-Type": "multipart/form-data" }
+  });
 };
 
 // ADD CATEGORY
@@ -144,6 +156,27 @@ export const getCategoryById = async (id) => {
 // GET SUBCATEGORIES
 export const getSubcategories = () => {
   return api.get(ENDPOINTS.SUBCATEGORIES);
+};
+
+// GET ORDERS
+export const getOrders = () => {
+  return api.get(ENDPOINTS.GETORDERS);
+};
+
+// GET ORDER BY ID
+export const getOrderById = async (id) => {
+  const res = await getOrders();
+  const orders = res.data?.data || [];
+  const order = orders.find(
+    (item) =>
+      String(item.id) === String(id) || String(item.order_id) === String(id)
+  );
+  return order || null;
+};
+
+// UPDATE ORDER STATUS
+export const updateOrderStatus = async (payload) => {
+  return api.put(ENDPOINTS.UPDATEORDERSTS, payload);
 };
 
 // ERROR HANDLER
