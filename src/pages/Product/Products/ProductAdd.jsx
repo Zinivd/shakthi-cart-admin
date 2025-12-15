@@ -16,7 +16,7 @@ const ProductAdd = () => {
   const [actualPrice, setActualPrice] = useState("");
   const [sellingPrice, setSellingPrice] = useState("");
   const [discount, setDiscount] = useState("");
-  // const [flashDeal, setFlashDeal] = useState("");
+  const [listType, setListType] = useState("");
   const [description, setDescription] = useState("");
   const [size, setSize] = useState([]);
   const [qty, setQty] = useState("");
@@ -47,6 +47,12 @@ const ProductAdd = () => {
     { value: "Peach", label: "Peach" },
     { value: "Maroon", label: "Maroon" },
     { value: "Lavender", label: "Lavender" },
+  ];
+
+  const productListType = [
+    { value: "Trending Now", label: "Trending Now" },
+    { value: "Top Rated", label: "Top Rated" },
+    { value: "Best Seller", label: "Best Seller" },
   ];
 
   useEffect(() => {
@@ -132,7 +138,7 @@ const ProductAdd = () => {
     formData.append("actual_price", actualPrice);
     formData.append("selling_price", sellingPrice);
     formData.append("discount", discount);
-    // formData.append("flash_deal", flashDeal);
+    formData.append("product_list_type", listType);
     formData.append("description", description);
     formData.append("color", color);
     formData.append("size_unit", JSON.stringify(rows));
@@ -168,6 +174,7 @@ const ProductAdd = () => {
               className="form-control"
               value={productName}
               onChange={(e) => setProductName(e.target.value)}
+              autoFocus
             />
           </div>
           <div className="col-lg-3 mb-3">
@@ -263,7 +270,7 @@ const ProductAdd = () => {
           </div>
           <div className="col-lg-3 mb-3">
             <label>
-              Discount <span>*</span>
+              Discount (%) <span>*</span>
             </label>
             <input
               type="number"
@@ -272,20 +279,25 @@ const ProductAdd = () => {
               onChange={(e) => setDiscount(e.target.value)}
             />
           </div>
-          {/* <div className="col-lg-3 mb-3">
+          <div className="col-lg-3 mb-3">
             <label>
-              Flash Deal <span>*</span>
+              Product List Type <span>*</span>
             </label>
             <select
               className="form-select"
-              value={flashDeal}
-              onChange={(e) => setFlashDeal(e.target.value)}
+              value={listType}
+              onChange={(e) => setListType(e.target.value)}
             >
-              <option value="">Select Flash deal</option>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
+              <option value="" disabled>
+                Select Product List Type
+              </option>
+              {productListType.map((type) => (
+                <option key={type.value} value={type.value}>
+                  {type.label}
+                </option>
+              ))}
             </select>
-          </div> */}
+          </div>
           <div className="col-lg-3 mb-3">
             <label>
               Description <span>*</span>

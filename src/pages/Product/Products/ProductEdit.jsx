@@ -12,7 +12,6 @@ const ProductEdit = () => {
 
   const [loading, setLoading] = useState(true);
   const [formLoad, setFormLoad] = useState(false);
-
   const [productName, setProductName] = useState("");
   const [brand, setBrand] = useState("");
   const [category, setCategory] = useState("");
@@ -21,17 +20,15 @@ const ProductEdit = () => {
   const [actualPrice, setActualPrice] = useState("");
   const [sellingPrice, setSellingPrice] = useState("");
   const [discount, setDiscount] = useState("");
+  const [listType, setListType] = useState("");
   const [description, setDescription] = useState("");
-
   const [oldImages, setOldImages] = useState([]);
   const [deletedOldImages, setDeletedOldImages] = useState([]);
   const [newImages, setNewImages] = useState([]);
   const [previews, setPreviews] = useState([]);
-
   const [rows, setRows] = useState([]);
   const [sizeValue, setSizeValue] = useState("");
   const [qty, setQty] = useState("");
-
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
 
@@ -49,6 +46,8 @@ const ProductEdit = () => {
     "Maroon",
     "Lavender",
   ];
+
+  const productListType = ["Trending Now", "Top Rated", "Best Seller"];
 
   // Fetch product, categories, subcategories
   useEffect(() => {
@@ -73,6 +72,7 @@ const ProductEdit = () => {
         setSellingPrice(product.selling_price || "");
         setDiscount(product.discount || "");
         setDescription(product.description || "");
+        setListType(product.product_list_type || "");
         setOldImages(product.images || []);
         setRows(
           (product.size_unit || []).map((s) => ({
@@ -148,18 +148,14 @@ const ProductEdit = () => {
     formData.append("actual_price", actualPrice);
     formData.append("selling_price", sellingPrice);
     formData.append("discount", discount);
+    formData.append("product_list_type", listType);
     formData.append("description", description);
 
     // Sizes
-    rows.forEach((r, i) => {
-      formData.append(`sizes[${i}][size]`, r.size);
-      formData.append(`sizes[${i}][qty]`, r.qty);
-    });
+    formData.append("size_unit", JSON.stringify(rows));
 
     // Only include old images that are not deleted
-    oldImages.forEach((img, i) => {
-      formData.append(`old_images[${i}]`, img);
-    });
+    formData.append("old_images", JSON.stringify(oldImages));
 
     // New images
     newImages.forEach((file) => {
@@ -305,7 +301,7 @@ const ProductEdit = () => {
 
           <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
             <label>
-              Discount <span>*</span>
+              Discount (%) <span>*</span>
             </label>
             <input
               type="number"
@@ -315,6 +311,25 @@ const ProductEdit = () => {
               onChange={(e) => setDiscount(e.target.value)}
               required
             />
+          </div>
+
+          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+            <label>
+              Product List Type <span>*</span>
+            </label>
+            <select
+              className="form-select"
+              value={listType}
+              onChange={(e) => setListType(e.target.value)}
+              required
+            >
+              <option value="">Select Product List Type</option>
+              {productListType.map((plt) => (
+                <option key={plt} value={plt}>
+                  {plt}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="col-sm-12 col-md-4 col-xl-3 mb-3">

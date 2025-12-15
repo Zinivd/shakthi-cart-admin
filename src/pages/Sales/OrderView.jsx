@@ -9,6 +9,7 @@ const OrderView = () => {
 
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [formLoad, setFormLoad] = useState(false);
   const [orderStatus, setOrderStatus] = useState("");
 
   useEffect(() => {
@@ -44,6 +45,7 @@ const OrderView = () => {
 
   // --- UPDATE STATUS HANDLER ---
   const handleStatusUpdate = async () => {
+    setFormLoad(true);
     const payload = {
       order_id: order.order_id,
       status: orderStatus,
@@ -54,6 +56,8 @@ const OrderView = () => {
       toast.success("Order status updated successfully");
     } catch {
       toast.error("Failed to update order status");
+    } finally {
+      setFormLoad(false);
     }
   };
 
@@ -76,8 +80,17 @@ const OrderView = () => {
             <option value="Delivered">Delivered</option>
           </select>
 
-          <button className="listbtn" onClick={handleStatusUpdate}>
-            Update
+          <button
+            type="submit"
+            className="listbtn"
+            disabled={formLoad}
+            onClick={handleStatusUpdate}
+          >
+            {formLoad ? (
+              <span className="spinner-border spinner-border-sm"></span>
+            ) : (
+              "Update"
+            )}
           </button>
         </div>
       </div>

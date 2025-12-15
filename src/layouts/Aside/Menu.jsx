@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 const Menu = () => {
   // Track which section is open
   const [openMenu, setOpenMenu] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const toggleCollapse = (menuName) => {
     setOpenMenu((prev) => (prev === menuName ? null : menuName));
@@ -37,6 +38,7 @@ const Menu = () => {
     const payload = {
       email: localStorage.getItem("email"),
     };
+    setLoading(true);
     try {
       const res = await logoutApi(payload);
       toast.success(res.data.message || "Logout successful!");
@@ -45,6 +47,8 @@ const Menu = () => {
       navigate("/login");
     } catch (err) {
       toast.error(err.response?.data?.message || "Logout failed!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -94,18 +98,18 @@ const Menu = () => {
           <ul className="btn-toggle-nav list-unstyled text-start ps-5 pe-0 pb-3">
             <li>
               <Link
-                to="/product/list"
+                to="/product/category/list"
                 className="d-inline-flex text-decoration-none rounded mt-3"
               >
-                Products List
+                Category List
               </Link>
             </li>
             <li>
               <Link
-                to="/product/category/list"
+                to="/product/list"
                 className="d-inline-flex text-decoration-none rounded"
               >
-                Category List
+                Products List
               </Link>
             </li>
           </ul>
@@ -229,12 +233,19 @@ const Menu = () => {
       <li className="mb-2">
         <button
           type="submit"
+          disabled={loading}
           onClick={handleLogout}
           className="asidebtn mx-auto"
         >
           <div className="btnname">
             <img src={IconLogout} height="20px" alt="" />
-            <span>Logout</span>
+            <span>
+              {loading ? (
+                <span className="spinner-border spinner-border-sm"></span>
+              ) : (
+                "Logout"
+              )}
+            </span>
           </div>
           <div className="righticon d-flex ms-auto">
             <i className="fas fa-angle-right toggle-icon"></i>

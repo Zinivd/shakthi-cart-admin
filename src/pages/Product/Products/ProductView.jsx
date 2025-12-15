@@ -98,10 +98,10 @@ const ProductView = () => {
           <h5 className="mb-0">{product.discount}%</h5>
         </div>
 
-        {/* <div className="cards mb-2">
-          <h6 className="mb-1">Flash Deal</h6>
-          <h5 className="mb-0">{product.flash_deal}</h5>
-        </div> */}
+        <div className="cards mb-2">
+          <h6 className="mb-1">Product List Type</h6>
+          <h5 className="mb-0">{product.product_list_type}</h5>
+        </div>
 
         <div className="cards mb-2">
           <h6 className="mb-1">Description</h6>
@@ -110,7 +110,7 @@ const ProductView = () => {
 
         <div className="cards mb-2">
           <h6 className="mb-1">Product Images</h6>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "10px" }}>
             {product.images.map((img, i) => (
               <img
                 key={i}

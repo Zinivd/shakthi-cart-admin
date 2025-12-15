@@ -33,11 +33,21 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error?.response?.status;
+
+    // Unauthorized
     if (status === 401) {
-      toast.error("Unauthorized — logging out...!");
+      toast.error("Unauthorized — logging out...");
       localStorage.clear();
       window.location.href = "/login";
     }
+
+    // API not found / invalid token / session issue
+    if (status === 404) {
+      console.error("API not found or invalid session");
+      localStorage.clear();
+      window.location.href = "/login";
+    }
+
     return Promise.reject(error);
   }
 );
@@ -113,7 +123,7 @@ export const addProduct = (payload) => {
 // EDIT PRODUCTS
 export const editProduct = (payload) => {
   return api.post(ENDPOINTS.EDITPRODUCT, payload, {
-    headers: { "Content-Type": "multipart/form-data" }
+    headers: { "Content-Type": "multipart/form-data" },
   });
 };
 
