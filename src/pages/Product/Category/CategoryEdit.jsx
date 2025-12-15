@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
+  addSubcategory,
   getCategoryById,
   updateCategory,
   updateSubCategory,
@@ -55,25 +56,46 @@ const CategoryEdit = () => {
     setFormLoad(true);
 
     try {
-      // 1️⃣ Update Category Name
+      // Update Category
       await updateCategory({
         category_id: id,
         category_name: categoryName,
       });
 
-      // 2️⃣ Update + Create Subcategories in one request
-      await updateSubCategory({
-        category_id: id,
-        subcategories: subcategories.map((sub) => ({
-          sub_category_id: sub.sub_category_id || null, // null → create
-          sub_category_name: sub.sub_category_name,
-        })),
-      });
+      // Separate new & existing subcategories
+      const newSubcategories = subcategories.filter(
+        (sub) => !sub.sub_category_id
+      );
+
+      const existingSubcategories = subcategories.filter(
+        (sub) => sub.sub_category_id
+      );
+
+      // POST → New Subcategories
+      if (newSubcategories.length > 0) {
+        await addSubcategory({
+          category_id: id,
+          subcategories: newSubcategories.map((sub) => ({
+            sub_category_name: sub.sub_category_name,
+          })),
+        });
+      }
+
+      // PUT → Existing Subcategories
+      if (existingSubcategories.length > 0) {
+        await updateSubCategory({
+          category_id: id,
+          subcategories: existingSubcategories.map((sub) => ({
+            sub_category_id: sub.sub_category_id,
+            sub_category_name: sub.sub_category_name,
+          })),
+        });
+      }
 
       toast.success("Category Updated Successfully!");
       navigate("/product/category/list");
     } catch (err) {
-      console.log(err);
+      console.error(err);
       toast.error("Update failed!");
     } finally {
       setFormLoad(false);

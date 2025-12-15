@@ -88,7 +88,7 @@ const ProductList = () => {
                     <td>
                       Actual - <span>₹ {item.actual_price}</span> <br />
                       Selling - <span>₹ {item.selling_price}</span> <br />
-                      Discount - <span>₹ {item.discount}</span>
+                      Discount - <span>{item.discount} %</span>
                     </td>
                     <td>
                       {item.size_unit

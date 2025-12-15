@@ -28,7 +28,7 @@ const CustomerView = () => {
 
         // Fetch address by user_id
         const resAddress = await getCustomerAddress(id);
-        setAddress(resAddress.data?.data || {});
+        setAddress(resAddress.data?.data?.[0] || null);
       } catch (error) {
         console.error("Error:", error);
         toast.error("Failed to load user!");
@@ -64,7 +64,7 @@ const CustomerView = () => {
           <h6 className="mb-2">Contact Number</h6>
           <h5 className="mb-0">+91 {user.phone || "-"}</h5>
         </div>
-        
+
         <div className="cards mb-2">
           <h6 className="mb-2">Email ID</h6>
           <h5 className="mb-0">{user.email || "-"}</h5>
@@ -78,11 +78,20 @@ const CustomerView = () => {
         </div>
 
         <div className="cards mb-2">
-          <h6 className="mb-2">Address Line 1</h6>
+          <h6 className="mb-2">Building Name</h6>
           <h5 className="mb-0 text-capitalize">
-            {address?.building_name || ""}, {address?.address_1 || ""},{" "}
-            {address?.address_2 || ""}
+            {address?.building_name || "-"}
           </h5>
+        </div>
+
+        <div className="cards mb-2">
+          <h6 className="mb-2">Address Line 1</h6>
+          <h5 className="mb-0 text-capitalize">{address?.address_1 || "-"}</h5>
+        </div>
+
+        <div className="cards mb-2">
+          <h6 className="mb-2">Address Line 2</h6>
+          <h5 className="mb-0 text-capitalize">{address?.address_2 || "-"}</h5>
         </div>
 
         <div className="cards mb-2">
