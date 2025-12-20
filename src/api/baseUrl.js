@@ -1,3 +1,3 @@
-const BASE_URL = "http://api-shakti.shakticart.com/api";
+const BASE_URL = "http://api-prod.shakticart.com/api";
 
 export default BASE_URL;
