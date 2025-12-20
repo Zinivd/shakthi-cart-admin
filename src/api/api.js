@@ -127,6 +127,11 @@ export const editProduct = (payload) => {
   });
 };
 
+// ADD REVIEW
+export const addReview = (payload) => {
+  return api.post(ENDPOINTS.ADDREVIEW, payload);
+};
+
 // ADD CATEGORY
 export const addCategory = (payload) => {
   return api.post(ENDPOINTS.ADDCATEGORY, payload);

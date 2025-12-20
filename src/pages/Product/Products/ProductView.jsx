@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { getProductById } from "../../../api/api.js";
 import Loader from "../../../components/Loader/Loader.jsx";
 import { IconDashboard } from "../../../../public/assets/Assets";
+import Review from "../../../components/Popup/Review.jsx";
 
 const ProductView = () => {
   const { id } = useParams(); // get product id from URL
@@ -50,7 +51,12 @@ const ProductView = () => {
     <div className="main-div">
       <div className="body-head mb-3">
         <h4 className="m-0">Product Details</h4>
+        <a data-bs-toggle="modal" data-bs-target="#reviewPopup">
+          <button className="formbtn">Add Review</button>
+        </a>
       </div>
+
+      <Review productId={product.product_id} />
 
       <div className="profile-card">
         <div className="cards mb-2">
@@ -110,7 +116,13 @@ const ProductView = () => {
 
         <div className="cards mb-2">
           <h6 className="mb-1">Product Images</h6>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "10px" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(2, 1fr)",
+              gap: "10px",
+            }}
+          >
             {product.images.map((img, i) => (
               <img
                 key={i}

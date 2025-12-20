@@ -30,7 +30,7 @@
 }
 
 .modal h4 {
-    color: var(--sub);
+    color: var(--main);
     font-weight: var(--fw-xl);
     font-size: 18px;
     margin-bottom: 0px;
@@ -38,8 +38,8 @@
 
 .modal form label,
 .modal label {
-    color: var(--text-secondary);
-    font-weight: var(--fw-md);
+    color: var(--label);
+    font-weight: var(--fw-sm);
     font-size: 12px;
     margin-bottom: 5px;
 }
@@ -58,10 +58,18 @@
 .modal .form-control,
 .modal .form-select {
     background-color: var(--input-bg) !important;
-    border: 1px solid var(--border);
-    color: var(--text-primary);
-    font-weight: var(--fw-sm);
+    color: var(--primary);
+    font-weight: var(--fw-md);
+    border: 1px solid var(--input-border);
     font-size: 12px;
+}
+
+.modal .form-control:focus,
+.modal .form-select:focus {
+    background-color: var(--input-bg) !important;
+    border: 1px solid var(--sub) !important;
+    outline: none;
+    box-shadow: none;
 }
 
 .modal table th {
