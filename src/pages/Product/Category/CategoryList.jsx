@@ -21,7 +21,7 @@ const CategoryList = () => {
         const finalData = categories.map((cat) => ({
           id: cat.category_id,
           category: cat.category_name,
-          status: cat.status,
+          image: cat.image,
           subCategory: subcategories.filter(
             (sub) => sub.category_id === cat.category_id
           ).length,
