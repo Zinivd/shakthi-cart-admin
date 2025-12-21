@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { getCategories, addProduct, getSubcategories } from "../../../api/api.js";
+import {
+  getCategories,
+  addProduct,
+  getSubcategories,
+} from "../../../api/api.js";
 
 const ProductAdd = () => {
   const [categories, setCategories] = useState([]);
@@ -72,9 +76,7 @@ const ProductAdd = () => {
   const handleCategoryChange = (e) => {
     const id = e.target.value;
     setCategoryId(id);
-    const subcat = subcategories.filter((sub) => 
-      sub.category_id === id
-    );
+    const subcat = subcategories.filter((sub) => sub.category_id === id);
     setFilteredSubcategories(subcat);
     setSubCategoryId("");
   };
@@ -82,12 +84,12 @@ const ProductAdd = () => {
   // Handle image selection
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    const newImages = [...images, ...files].slice(0, 4);
-    const newPreviews = newImages.map((file) => URL.createObjectURL(file));
-    if (newImages.length > 4) {
-      toast.error("You can only upload 4 images");
+    if (images.length + files.length > 5) {
+      toast.error("You can only upload 5 images");
       return;
     }
+    const newImages = [...images, ...files];
+    const newPreviews = newImages.map((file) => URL.createObjectURL(file));
     setImages(newImages);
     setPreviews(newPreviews);
   };
@@ -165,7 +167,7 @@ const ProductAdd = () => {
 
       <div className="form-div mb-3">
         <div className="row">
-          <div className="col-lg-3 mb-3">
+          <div className="col-md-3 col-lg-3 mb-3">
             <label>
               Product Name <span>*</span>
             </label>
@@ -177,7 +179,7 @@ const ProductAdd = () => {
               autoFocus
             />
           </div>
-          <div className="col-lg-3 mb-3">
+          <div className="col-md-3 col-lg-3 mb-3">
             <label>
               Brand <span>*</span>
             </label>
@@ -188,7 +190,7 @@ const ProductAdd = () => {
               onChange={(e) => setBrand(e.target.value)}
             />
           </div>
-          <div className="col-lg-3 mb-3">
+          <div className="col-md-3 col-lg-3 mb-3">
             <label>
               Category <span>*</span>
             </label>
@@ -207,7 +209,7 @@ const ProductAdd = () => {
               ))}
             </select>
           </div>
-          <div className="col-lg-3 mb-3">
+          <div className="col-md-3 col-lg-3 mb-3">
             <label>Sub Category</label>
             <select
               className="form-select"
@@ -227,7 +229,7 @@ const ProductAdd = () => {
               ))}
             </select>
           </div>
-          <div className="col-lg-3 mb-3">
+          <div className="col-md-3 col-lg-3 mb-3">
             <label>
               Color <span>*</span>
             </label>
@@ -246,7 +248,7 @@ const ProductAdd = () => {
               ))}
             </select>
           </div>
-          <div className="col-lg-3 mb-3">
+          <div className="col-md-3 col-lg-3 mb-3">
             <label>
               Actual Price <span>*</span>
             </label>
@@ -257,7 +259,7 @@ const ProductAdd = () => {
               onChange={(e) => setActualPrice(e.target.value)}
             />
           </div>
-          <div className="col-lg-3 mb-3">
+          <div className="col-md-3 col-lg-3 mb-3">
             <label>
               Selling Price <span>*</span>
             </label>
@@ -268,7 +270,7 @@ const ProductAdd = () => {
               onChange={(e) => setSellingPrice(e.target.value)}
             />
           </div>
-          <div className="col-lg-3 mb-3">
+          <div className="col-md-3 col-lg-3 mb-3">
             <label>
               Discount (%) <span>*</span>
             </label>
@@ -279,7 +281,18 @@ const ProductAdd = () => {
               onChange={(e) => setDiscount(e.target.value)}
             />
           </div>
-          <div className="col-lg-3 mb-3">
+          <div className="col-md-6 col-lg-6 mb-3">
+            <label>
+              Description <span>*</span>
+            </label>
+            <textarea
+              className="form-control"
+              rows="3"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+          <div className="col-md-3 col-lg-3 mb-3">
             <label>
               Product List Type <span>*</span>
             </label>
@@ -298,18 +311,7 @@ const ProductAdd = () => {
               ))}
             </select>
           </div>
-          <div className="col-lg-3 mb-3">
-            <label>
-              Description <span>*</span>
-            </label>
-            <textarea
-              className="form-control"
-              rows="1"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </div>
-          <div className="col-lg-3 mb-3">
+          <div className="col-md-3 col-lg-3 mb-3">
             <label>
               Product Images <span>*</span>
             </label>
@@ -321,7 +323,7 @@ const ProductAdd = () => {
               onChange={handleImageChange}
             />
           </div>
-          <div className="col-lg-6 d-flex gap-2 flex-wrap">
+          <div className="col-md-6 col-lg-6 d-flex gap-2 flex-wrap">
             {previews.map((src, index) => (
               <div key={index} className="product-img-div">
                 <img
@@ -348,13 +350,13 @@ const ProductAdd = () => {
 
       <div className="form-div">
         <div className="row">
-          <div className="col-lg-3 mb-3">
+          <div className="col-md-3 col-lg-3 mb-3">
             <label>
               Size <span>*</span>
             </label>
             <Select options={sizeOptions} value={size} onChange={setSize} />
           </div>
-          <div className="col-lg-3 mb-3">
+          <div className="col-md-3 col-lg-3 mb-3">
             <label>
               Quantity <span>*</span>
             </label>
@@ -365,7 +367,7 @@ const ProductAdd = () => {
               onChange={(e) => setQty(e.target.value)}
             />
           </div>
-          <div className="col-lg-3 mb-3 d-flex align-items-end">
+          <div className="col-md-3 col-lg-3 mb-3 d-flex align-items-end">
             <button type="button" className="greenbtn" onClick={handleAddRow}>
               Add
             </button>
@@ -374,7 +376,7 @@ const ProductAdd = () => {
 
         {rows.map((item, index) => (
           <div key={index} className="row mb-2">
-            <div className="col-lg-3">
+            <div className="col-md-3 col-lg-3">
               <input
                 type="text"
                 className="form-control"
@@ -383,7 +385,7 @@ const ProductAdd = () => {
               />
             </div>
 
-            <div className="col-lg-3">
+            <div className="col-md-3 col-lg-3">
               <input
                 type="number"
                 className="form-control"
@@ -392,7 +394,7 @@ const ProductAdd = () => {
               />
             </div>
 
-            <div className="col-lg-3 d-flex align-items-end">
+            <div className="col-md-3 col-lg-3 d-flex align-items-end">
               <button
                 type="button"
                 className="redbtn"

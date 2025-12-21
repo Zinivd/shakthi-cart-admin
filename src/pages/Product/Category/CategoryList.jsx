@@ -80,9 +80,9 @@ const CategoryList = () => {
               <tr>
                 <th>#</th>
                 <th>Code</th>
+                <th>Image</th>
                 <th>Category</th>
                 <th>SubCategory</th>
-                <th>Status</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -92,19 +92,9 @@ const CategoryList = () => {
                   <tr key={index}>
                     <td>{index + 1}</td>
                     <td>{item.id || "-"}</td>
+                    <td><img src={item.image} height="50px" width="50px" className="rounded object-fit-cover object-top" /></td>
                     <td>{item.category || "-"}</td>
                     <td>{item.subCategory || "-"}</td>
-                    <td>
-                      <span
-                        className={
-                          item.status === "Active"
-                            ? "text-success"
-                            : "text-danger"
-                        }
-                      >
-                        {item.status || "-"}
-                      </span>
-                    </td>
                     <td>
                       <div className="d-flex align-items-center gap-2">
                         <Link

@@ -102,10 +102,16 @@ const ProductEdit = () => {
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
+    const totalImages = oldImages.length + newImages.length + files.length;
+    if (totalImages > 4) {
+      toast.error("You can upload only 4 images in total");
+      e.target.value = "";
+      return;
+    }
     setNewImages((prev) => [...prev, ...files]);
     setPreviews((prev) => [
       ...prev,
-      ...files.map((f) => URL.createObjectURL(f)),
+      ...files.map((file) => URL.createObjectURL(file)),
     ]);
   };
 
@@ -185,7 +191,7 @@ const ProductEdit = () => {
       <div className="form-div mb-3">
         <div className="row">
           {/* Product Info */}
-          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+          <div className="col-md-3 col-xl-3 mb-3">
             <label>
               Product Name <span>*</span>
             </label>
@@ -198,7 +204,7 @@ const ProductEdit = () => {
             />
           </div>
 
-          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+          <div className="col-md-3 col-xl-3 mb-3">
             <label>
               Brand Name <span>*</span>
             </label>
@@ -211,7 +217,7 @@ const ProductEdit = () => {
             />
           </div>
 
-          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+          <div className="col-md-3 col-xl-3 mb-3">
             <label>
               Category <span>*</span>
             </label>
@@ -230,7 +236,7 @@ const ProductEdit = () => {
             </select>
           </div>
 
-          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+          <div className="col-md-3 col-xl-3 mb-3">
             <label>
               Sub Category <span>*</span>
             </label>
@@ -252,7 +258,7 @@ const ProductEdit = () => {
             </select>
           </div>
 
-          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+          <div className="col-md-3 col-xl-3 mb-3">
             <label>
               Color <span>*</span>
             </label>
@@ -271,7 +277,7 @@ const ProductEdit = () => {
             </select>
           </div>
 
-          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+          <div className="col-md-3 col-xl-3 mb-3">
             <label>
               Actual Price <span>*</span>
             </label>
@@ -285,7 +291,7 @@ const ProductEdit = () => {
             />
           </div>
 
-          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+          <div className="col-md-3 col-xl-3 mb-3">
             <label>
               Selling Price <span>*</span>
             </label>
@@ -299,7 +305,7 @@ const ProductEdit = () => {
             />
           </div>
 
-          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+          <div className="col-md-3 col-xl-3 mb-3">
             <label>
               Discount (%) <span>*</span>
             </label>
@@ -313,7 +319,20 @@ const ProductEdit = () => {
             />
           </div>
 
-          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+          <div className="col-md-6 col-xl-6 mb-3">
+            <label>
+              Description <span>*</span>
+            </label>
+            <textarea
+              rows="3"
+              className="form-control"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              required
+            />
+          </div>
+          
+          <div className="col-md-3 col-xl-3 mb-3">
             <label>
               Product List Type <span>*</span>
             </label>
@@ -332,20 +351,7 @@ const ProductEdit = () => {
             </select>
           </div>
 
-          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
-            <label>
-              Description <span>*</span>
-            </label>
-            <textarea
-              rows="1"
-              className="form-control"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+          <div className="col-md-3 col-xl-3 mb-3">
             <label>
               Product Images <span>*</span>
             </label>
@@ -359,7 +365,7 @@ const ProductEdit = () => {
           </div>
 
           {/* Old images */}
-          <div className="col-sm-12 col-md-6 col-xl-6 d-flex gap-2 flex-wrap mb-3">
+          <div className="col-md-6 col-xl-6 d-flex gap-2 flex-wrap mb-3">
             {oldImages.map((img, i) => (
               <div key={i} className="position-relative">
                 <img
@@ -412,7 +418,7 @@ const ProductEdit = () => {
       {/* Size / Quantity */}
       <div className="form-div mb-3">
         <div className="row align-items-end">
-          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+          <div className="col-md-3 col-xl-3 mb-3">
             <label>
               Size <span>*</span>
             </label>
@@ -434,7 +440,7 @@ const ProductEdit = () => {
             </select>
           </div>
 
-          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+          <div className="col-md-3 col-xl-3 mb-3">
             <label>
               Quantity <span>*</span>
             </label>
@@ -447,7 +453,7 @@ const ProductEdit = () => {
             />
           </div>
 
-          <div className="col-sm-12 col-md-4 col-xl-3 mb-3">
+          <div className="col-md-3 col-xl-3 mb-3">
             <button type="button" className="greenbtn" onClick={handleAddRow}>
               Add
             </button>

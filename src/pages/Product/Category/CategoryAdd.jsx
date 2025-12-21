@@ -5,6 +5,7 @@ import { addCategory, addSubcategory } from "../../../api/api.js";
 
 const CategoryAdd = () => {
   const [category, setCategory] = useState("");
+  const [categoryImage, setCategoryImage] = useState(null);
   const [subcategories, setSubcategories] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [loading, setLoading] = useState(false);
@@ -23,9 +24,26 @@ const CategoryAdd = () => {
     setSubcategories(subcategories.filter((_, i) => i !== index));
   };
 
+  // Add IMAGE
+
+  const handleCategoryImageAdd = (e) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    if (files.length > 1) {
+      toast.error("Only one image is allowed");
+      e.target.value = "";
+      return;
+    }
+    setCategoryImage(files[0]);
+  };
+
+  const handleCategoryImageRemove = () => {
+    setCategoryImage(null);
+  };
+
   // SAVE CATEGORY + SUBCATEGORIES
   const handleSubmit = async () => {
-    if (!category) {
+    if (!category || !categoryImage) {
       toast.error("Please fill all required fields");
       return;
     }
@@ -33,20 +51,21 @@ const CategoryAdd = () => {
     setLoading(true);
 
     try {
-      // CREATE CATEGORY
-      const catPayload = { category_name: category };
-      const catRes = await addCategory(catPayload);
+      const formData = new FormData();
+      formData.append("category_name", category);
+      formData.append("image", categoryImage);
+
+      const catRes = await addCategory(formData);
       const categoryId = catRes?.data?.data?.category_id;
 
       if (!categoryId) {
         toast.error("Backend did not return category_id!");
-        setLoading(false);
         return;
       }
 
       toast.success("Category Created Successfully!");
 
-      // CREATE SUBCATEGORIES
+      // SUBCATEGORIES
       if (subcategories.length > 0) {
         const subPayload = {
           category_id: categoryId,
@@ -59,7 +78,9 @@ const CategoryAdd = () => {
         toast.success("Subcategories Created Successfully!");
       }
 
+      // RESET
       setCategory("");
+      setCategoryImage(null);
       setSubcategories([]);
       navigate("/product/category/list");
     } catch (err) {
@@ -78,7 +99,7 @@ const CategoryAdd = () => {
       {/* CATEGORY INPUTS */}
       <div className="form-div mb-3">
         <div className="row">
-          <div className="col-lg-3 mb-3">
+          <div className="col-md-3 col-lg-3 mb-3">
             <label>
               Category <span>*</span>
             </label>
@@ -91,6 +112,41 @@ const CategoryAdd = () => {
               required
             />
           </div>
+          <div className="col-md-3 col-lg-3 mb-3">
+            <label>
+              Category Image <span>*</span>
+            </label>
+            <input
+              type="file"
+              className="form-control"
+              accept="image/*"
+              onChange={handleCategoryImageAdd}
+            />
+          </div>
+          <div className="col-md-2 col-lg-2 mb-3">
+            {categoryImage && (
+              <div className="position-relative mt-2">
+                <img
+                  src={URL.createObjectURL(categoryImage)}
+                  alt="preview"
+                  className="rounded-2 object-fit-cover"
+                  style={{
+                    height: "125px",
+                    width: "125px",
+                    objectPosition: "top",
+                  }}
+                />
+                <button
+                  type="button"
+                  className="xmarkbtn"
+                  style={{ position: "absolute", top: 2, right: 2 }}
+                  onClick={handleCategoryImageRemove}
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <div className="body-head mb-3">
@@ -99,7 +155,7 @@ const CategoryAdd = () => {
       {/* SUBCATEGORY INPUT */}
       <div className="form-div">
         <div className="row mb-2">
-          <div className="col-lg-3 mb-2">
+          <div className="col-md-3 col-lg-3 mb-2">
             <label>
               Sub Category <span>*</span>
             </label>
@@ -111,7 +167,7 @@ const CategoryAdd = () => {
             />
           </div>
 
-          <div className="col-lg-2 mb-2 d-flex align-items-end">
+          <div className="col-md-2 col-lg-2 mb-2 d-flex align-items-end">
             <button type="button" className="greenbtn" onClick={handleAdd}>
               Add
             </button>
@@ -121,7 +177,7 @@ const CategoryAdd = () => {
         {/* SHOW SUBCATEGORY LIST */}
         {subcategories.map((item, index) => (
           <div key={index} className="row">
-            <div className="col-lg-3 mb-2">
+            <div className="col-md-3 col-lg-3 mb-2">
               <input
                 type="text"
                 className="form-control"
@@ -130,7 +186,7 @@ const CategoryAdd = () => {
               />
             </div>
 
-            <div className="col-lg-2 mb-2 d-flex align-items-end">
+            <div className="col-md-2 col-lg-2 mb-2 d-flex align-items-end">
               <button
                 type="button"
                 className="redbtn"

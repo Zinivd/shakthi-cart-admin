@@ -13,6 +13,8 @@ const CategoryEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [categoryName, setCategoryName] = useState("");
+  const [categoryImage, setCategoryImage] = useState(null);
+  const [oldCategoryImage, setOldCategoryImage] = useState("");
   const [subcategories, setSubcategories] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [loading, setLoading] = useState(true);
@@ -24,6 +26,7 @@ const CategoryEdit = () => {
         const data = await getCategoryById(id);
         setCategoryName(data.category_name);
         setSubcategories(data.subcategories);
+        setOldCategoryImage(data.image || "");
       } catch (err) {
         toast.error("Failed to load category");
       } finally {
@@ -52,15 +55,44 @@ const CategoryEdit = () => {
     setSubcategories(subcategories.filter((_, i) => i !== index));
   };
 
+  const handleCategoryImageAdd = (e) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+
+    if (files.length > 1) {
+      toast.error("Only one image is allowed");
+      e.target.value = "";
+      return;
+    }
+
+    setCategoryImage(files[0]);
+  };
+
+  const handleCategoryImageRemove = () => {
+    setCategoryImage(null);
+    setOldCategoryImage("");
+  };
+
   const handleUpdate = async () => {
+    if (!categoryName) {
+      toast.error("Category name is required");
+      return;
+    }
+
     setFormLoad(true);
 
     try {
-      // Update Category
-      await updateCategory({
-        category_id: id,
-        category_name: categoryName,
-      });
+      const formData = new FormData();
+      formData.append("category_id", id);
+      formData.append("category_name", categoryName);
+
+      // Only send image if user selected new one
+      if (categoryImage) {
+        formData.append("image", categoryImage);
+      }
+
+      // UPDATE CATEGORY (name + image)
+      await updateCategory(formData);
 
       // Separate new & existing subcategories
       const newSubcategories = subcategories.filter(
@@ -71,7 +103,7 @@ const CategoryEdit = () => {
         (sub) => sub.sub_category_id
       );
 
-      // POST → New Subcategories
+      // ADD new subcategories
       if (newSubcategories.length > 0) {
         await addSubcategory({
           category_id: id,
@@ -81,7 +113,7 @@ const CategoryEdit = () => {
         });
       }
 
-      // PUT → Existing Subcategories
+      // UPDATE existing subcategories
       if (existingSubcategories.length > 0) {
         await updateSubCategory({
           category_id: id,
@@ -112,7 +144,7 @@ const CategoryEdit = () => {
       {/* CATEGORY INPUTS */}
       <div className="form-div mb-3">
         <div className="row">
-          <div className="col-lg-3 mb-3">
+          <div className="col-md-3 col-lg-3 mb-3">
             <label>
               Category <span>*</span>
             </label>
@@ -123,6 +155,46 @@ const CategoryEdit = () => {
               required
             />
           </div>
+          <div className="col-md-3 col-lg-3 mb-3">
+            <label>
+              Category Image <span>*</span>
+            </label>
+
+            <input
+              type="file"
+              className="form-control"
+              accept="image/*"
+              onChange={handleCategoryImageAdd}
+            />
+          </div>
+          <div className="col-md-2 col-lg-2 mb-3">
+            {(categoryImage || oldCategoryImage) && (
+              <div className="position-relative mt-2">
+                <img
+                  src={
+                    categoryImage
+                      ? URL.createObjectURL(categoryImage)
+                      : oldCategoryImage
+                  }
+                  alt="category"
+                  className="rounded-2 object-fit-cover"
+                  style={{
+                    height: "125px",
+                    width: "125px",
+                    objectPosition: "top",
+                  }}
+                />
+                <button
+                  type="button"
+                  className="xmarkbtn"
+                  style={{ position: "absolute", top: 2, right: 2 }}
+                  onClick={handleCategoryImageRemove}
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <div className="body-head mb-3">
@@ -131,7 +203,7 @@ const CategoryEdit = () => {
       {/* SUBCATEGORY INPUT */}
       <div className="form-div">
         <div className="row mb-2">
-          <div className="col-lg-3 mb-2">
+          <div className="col-md-3 col-lg-3 mb-2">
             <label>
               Subcategories <span>*</span>
             </label>
@@ -143,7 +215,7 @@ const CategoryEdit = () => {
             />
           </div>
 
-          <div className="col-lg-2 mb-2 d-flex align-items-end">
+          <div className="col-md-2 col-lg-2 mb-2 d-flex align-items-end">
             <button type="button" className="greenbtn mt-2" onClick={handleAdd}>
               Add
             </button>
@@ -153,7 +225,7 @@ const CategoryEdit = () => {
         {/* EXISTING SUBCATEGORY LIST */}
         {subcategories.map((sub, index) => (
           <div key={index} className="row">
-            <div className="col-lg-3 mb-2">
+            <div className="col-md-3 col-lg-3 mb-2">
               <input
                 type="text"
                 className="form-control"
@@ -166,7 +238,7 @@ const CategoryEdit = () => {
               />
             </div>
 
-            <div className="col-lg-2 mb-2 d-flex align-items-end">
+            <div className="col-md-2 col-lg-2 mb-2 d-flex align-items-end">
               <button
                 type="button"
                 className="redbtn"

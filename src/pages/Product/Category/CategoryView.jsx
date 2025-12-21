@@ -46,6 +46,20 @@ const CategoryView = () => {
         </div>
 
         <div className="cards mb-2">
+          <h6 className="mb-2">Category Image</h6>
+          {category.image ? (
+            <img
+              src={category.image}
+              alt="Category"
+              className="rounded-1 object-fit-cover object-top"
+              style={{ height: "100px", width: "100px" }}
+            />
+          ) : (
+            <h5 className="mb-0">-</h5>
+          )}
+        </div>
+
+        <div className="cards mb-2">
           <h6 className="mb-2">Category</h6>
           <h5 className="mb-0">{category.category_name || "-"}</h5>
         </div>
@@ -55,19 +69,6 @@ const CategoryView = () => {
           {category.subcategories.map((sub) => (
             <h5 className="mb-1">{sub.sub_category_name}</h5>
           ))}
-        </div>
-
-        <div className="cards mb-2">
-          <h6 className="mb-2">Status</h6>
-          <h5 className="mb-0">
-            <span
-              className={
-                category.status === "Active" ? "text-success" : "text-danger"
-              }
-            >
-              {category.status || "-"}
-            </span>
-          </h5>
         </div>
       </div>
     </div>

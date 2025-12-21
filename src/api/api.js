@@ -139,7 +139,7 @@ export const addCategory = (payload) => {
 
 // UPDATE CATEGORY
 export const updateCategory = (payload) => {
-  return api.put(ENDPOINTS.EDITCATEGORY, payload);
+  return api.post(ENDPOINTS.EDITCATEGORY, payload);
 };
 
 // ADD SUBCATEGORY
