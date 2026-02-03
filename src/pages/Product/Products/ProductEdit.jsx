@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getProductById, editProduct } from "../../../api/api.js";
+import { getProductById, editProduct, quantityApi, quantityByIdApi } from "../../../api/api.js";
 import api from "../../../api/api.js";
 import ENDPOINTS from "../../../api/endpoints.js";
 import { toast } from "react-toastify";
@@ -74,10 +74,18 @@ const ProductEdit = () => {
         setDescription(product.description || "");
         setListType(product.product_list_type || "");
         setOldImages(product.images || []);
+        const qtyRes = await quantityByIdApi(id);
+        const quantities =
+          Array.isArray(qtyRes.data?.data)
+            ? qtyRes.data.data
+            : Array.isArray(qtyRes.data?.data?.quantities)
+            ? qtyRes.data.data.quantities
+            : [];
+
         setRows(
-          (product.size_unit || []).map((s) => ({
-            size: s.size,
-            qty: s.qty,
+          quantities.map((q) => ({
+            size: q.size,
+            qty: q.quantity,
           }))
         );
 
@@ -140,11 +148,10 @@ const ProductEdit = () => {
     setRows((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // Update product
   const handleUpdate = async () => {
     setFormLoad(true);
-    const formData = new FormData();
 
+    const formData = new FormData();
     formData.append("product_id", id);
     formData.append("product_name", productName);
     formData.append("brand", brand);
@@ -157,24 +164,34 @@ const ProductEdit = () => {
     formData.append("product_list_type", listType);
     formData.append("description", description);
 
-    // Sizes
-    formData.append("size_unit", JSON.stringify(rows));
-
-    // Only include old images that are not deleted
     formData.append("old_images", JSON.stringify(oldImages));
 
-    // New images
     newImages.forEach((file) => {
       formData.append("images[]", file);
     });
 
     try {
+      // 1️⃣ Update product
       await editProduct(formData);
+
+      // 2️⃣ Update quantities (BULK)
+      await quantityApi({
+        product_id: id,
+        quantities: rows.map((item) => ({
+          size: item.size,
+          quantity: Number(item.qty),
+        })),
+      });
+
       toast.success("Product updated successfully");
       navigate("/product/list");
     } catch (err) {
       console.error(err);
-      toast.error("Update failed");
+      toast.error(
+        err?.response?.data?.error ||
+          err?.response?.data?.message ||
+          "Update failed",
+      );
     } finally {
       setFormLoad(false);
     }
@@ -331,7 +348,7 @@ const ProductEdit = () => {
               required
             />
           </div>
-          
+
           <div className="col-md-3 col-xl-3 mb-3">
             <label>
               Product List Type <span>*</span>
@@ -471,7 +488,7 @@ const ProductEdit = () => {
                     value={item.size}
                     onChange={(e) => {
                       const updatedRows = rows.map((r, i) =>
-                        i === index ? { ...r, size: e.target.value } : r
+                        i === index ? { ...r, size: e.target.value } : r,
                       );
                       setRows(updatedRows);
                     }}
@@ -492,7 +509,7 @@ const ProductEdit = () => {
                     value={item.qty}
                     onChange={(e) => {
                       const updatedRows = rows.map((r, i) =>
-                        i === index ? { ...r, qty: Number(e.target.value) } : r
+                        i === index ? { ...r, qty: Number(e.target.value) } : r,
                       );
                       setRows(updatedRows);
                     }}

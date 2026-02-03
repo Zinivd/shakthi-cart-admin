@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getProducts } from "../../../api/api.js";
+import { getProducts, quantityByIdApi } from "../../../api/api.js";
 import useTable from "../../../layouts/Table/useTable.jsx";
 import Loader from "../../../components/Loader/Loader.jsx";
 import { toast } from "react-toastify";
@@ -14,7 +14,24 @@ const ProductList = () => {
       try {
         const res = await getProducts();
         const products = res.data?.data || [];
-        setData(products);
+
+        const productsWithQty = await Promise.all(
+          products.map(async (p) => {
+            try {
+              const qtyRes = await quantityByIdApi(p.product_id);
+              console.log(qtyRes);
+              
+              return {
+                ...p,
+                size_unit: qtyRes.data?.data.quantities || [],
+              };
+            } catch {
+              return { ...p, size_unit: [] };
+            }
+          }),
+        );
+
+        setData(productsWithQty);
       } catch (error) {
         toast.error("Failed to load products");
       } finally {
@@ -91,9 +108,15 @@ const ProductList = () => {
                       Discount - <span>{item.discount} %</span>
                     </td>
                     <td>
-                      {item.size_unit
-                        ?.map((s) => `${s.size} - ${s.qty}`)
-                        .join(", ")}
+                      {item.size_unit?.length > 0 ? (
+    item.size_unit.map((s, i) => (
+      <div key={i}>
+        {s.size} - {s.quantity}
+      </div>
+    ))
+  ) : (
+    <span className="text-muted">No Stock</span>
+  )}
                     </td>
                     <td>
                       <div className="d-flex align-items-center gap-2">

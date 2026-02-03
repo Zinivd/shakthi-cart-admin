@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getProductById } from "../../../api/api.js";
+import { getProductById, quantityByIdApi } from "../../../api/api.js";
 import Loader from "../../../components/Loader/Loader.jsx";
 import { IconDashboard } from "../../../../public/assets/Assets";
 import Review from "../../../components/Popup/Review.jsx";
@@ -20,16 +20,18 @@ const ProductView = () => {
 
         if (!productData) {
           alert("Product not found");
-          setLoading(false);
           return;
         }
+
+        // fetch quantities
+        const qtyRes = await quantityByIdApi(productData.product_id);
 
         const transformedData = {
           ...productData,
           images: productData.images?.length
             ? productData.images
             : [IconDashboard],
-          sizes: productData.size_unit || [],
+          sizes: qtyRes.data?.data?.quantities || [],
         };
 
         setProduct(transformedData);
@@ -145,12 +147,20 @@ const ProductView = () => {
               </tr>
             </thead>
             <tbody>
-              {product.sizes.map((s, index) => (
-                <tr key={index}>
-                  <td className="py-1">{s.size}</td>
-                  <td className="py-1">{s.qty}</td>
+              {product.sizes.length > 0 ? (
+                product.sizes.map((s, index) => (
+                  <tr key={index}>
+                    <td className="py-1">{s.size}</td>
+                    <td className="py-1">{s.quantity}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="2" className="text-center text-muted">
+                    No Stock Available
+                  </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

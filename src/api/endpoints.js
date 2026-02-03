@@ -10,6 +10,8 @@ const ENDPOINTS = {
   GETPRODUCTBYID: "/product/by-id",
   ADDPRODUCT: "/product/create",
   EDITPRODUCT: "/product/update",
+  QUANTITY: "admin/product/quantity",
+  QUANTITYBYID: "/product",
   ADDREVIEW: "/admin/product/review",
   CATEGORIES: "/category/all",
   SUBCATEGORIES: "/subcategories",

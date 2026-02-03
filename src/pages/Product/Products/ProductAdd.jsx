@@ -6,6 +6,7 @@ import {
   getCategories,
   addProduct,
   getSubcategories,
+  quantityApi,
 } from "../../../api/api.js";
 
 const ProductAdd = () => {
@@ -103,16 +104,19 @@ const ProductAdd = () => {
 
   // Size / Qty
   const handleAddRow = () => {
-    if (size.length === 0 || qty === "") {
+    if (!size?.value || qty === "") {
       toast.info("Select size & enter qty");
       return;
     }
-    const newRow = {
-      size: size.value,
-      qty: qty,
-    };
-    setRows([...rows, newRow]);
-    setSize([]);
+
+    const exists = rows.find((r) => r.size === size.value);
+    if (exists) {
+      toast.error("This size is already added");
+      return;
+    }
+
+    setRows([...rows, { size: size.value, qty }]);
+    setSize(null);
     setQty("");
   };
 
@@ -132,6 +136,7 @@ const ProductAdd = () => {
       toast.error("Please fill all required fields");
       return;
     }
+
     const formData = new FormData();
     formData.append("product_name", productName);
     formData.append("brand", brand);
@@ -143,14 +148,33 @@ const ProductAdd = () => {
     formData.append("product_list_type", listType);
     formData.append("description", description);
     formData.append("color", color);
-    formData.append("size_unit", JSON.stringify(rows));
+
     images.forEach((file) => {
       formData.append("images[]", file);
     });
+
     setLoading(true);
 
     try {
-      const res = await addProduct(formData);
+      // 1️⃣ Create Product
+      const productRes = await addProduct(formData);
+
+      const productId =
+        productRes?.data?.data?.product_id || productRes?.data?.data?.id;
+
+      if (!productId) {
+        throw new Error("Product ID not returned");
+      }
+
+      // 2️⃣ Call Quantity API for each size
+      await quantityApi({
+        product_id: productId,
+        quantities: rows.map((item) => ({
+          size: item.size,
+          quantity: Number(item.qty),
+        })),
+      });
+
       toast.success("Product added successfully!");
       navigate("/product/list");
     } catch (error) {
@@ -159,6 +183,7 @@ const ProductAdd = () => {
       setLoading(false);
     }
   };
+
   return (
     <div className="container-fluid px-0">
       <div className="body-head mb-3">

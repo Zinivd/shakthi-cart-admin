@@ -117,7 +117,9 @@ export const getProductById = async (productId) => {
 
 // ADD PRODUCTS
 export const addProduct = (payload) => {
-  return api.post(ENDPOINTS.ADDPRODUCT, payload);
+  return api.post(ENDPOINTS.ADDPRODUCT, payload, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
 };
 
 // EDIT PRODUCTS
@@ -200,6 +202,16 @@ export const errorHandler = (error) => {
     statusCode: error?.response?.status || 500,
     message: error?.response?.data?.message || "Something went wrong",
   };
+};
+
+// QUANTITY
+export const quantityApi = (payload) => {
+  return api.post(ENDPOINTS.QUANTITY, payload);
+};
+
+// QUANTITY BY ID
+export const quantityByIdApi = (productId) => {
+  return api.get(`${ENDPOINTS.QUANTITYBYID}/${productId}/quantities`);
 };
 
 export default api;
