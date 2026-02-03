@@ -177,7 +177,7 @@ export const getSubcategories = () => {
 
 // GET ORDERS
 export const getOrders = () => {
-  return api.get(ENDPOINTS.GETORDERS);
+  return api.get(ENDPOINTS.GETALLORDERS);
 };
 
 // GET ORDER BY ID

@@ -19,7 +19,8 @@ const ENDPOINTS = {
   ADDSUBCATEGORY: "/subcategory/create",
   EDITCATEGORY: `/category/update`,
   EDITSUBCATEGORY: `/subcategories/update`,
-  GETORDERS: "/order/list",
+  // GETORDERS: "/order/list",
+  GETALLORDERS: "/admin/orders",
   UPDATEORDERSTS: "/order/update-status",
   USERINFO: "/user/info"
 };

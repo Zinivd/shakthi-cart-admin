@@ -90,10 +90,10 @@ const OrderList = () => {
                     <td>{item.items.length}</td>
                     <td>{item.user_name}</td>
                     <td>₹ {item.total_amount}</td>
-                    <td>{item.payment_mode}</td>
+                    <td className="text-capitalize">{item.payment_mode}</td>
                     <td
                       className={
-                        item.payment_status === "PAID"
+                        item.payment_status === "SUCCESS"
                           ? "text-success"
                           : "text-warning"
                       }
