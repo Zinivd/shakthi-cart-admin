@@ -258,6 +258,17 @@ const ProductAdd = () => {
             <label>
               Color <span>*</span>
             </label>
+            <input
+              type="text"
+              className="form-control"
+              value={color}
+              onChange={(e) => setColor(e.target.value)}
+            />
+          </div>
+          {/* <div className="col-md-3 col-lg-3 mb-3">
+            <label>
+              Color <span>*</span>
+            </label>
             <select
               className="form-select"
               value={color}
@@ -272,7 +283,7 @@ const ProductAdd = () => {
                 </option>
               ))}
             </select>
-          </div>
+          </div> */}
           <div className="col-md-3 col-lg-3 mb-3">
             <label>
               Actual Price <span>*</span>

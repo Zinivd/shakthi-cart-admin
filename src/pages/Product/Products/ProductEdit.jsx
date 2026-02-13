@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getProductById, editProduct, quantityApi, quantityByIdApi } from "../../../api/api.js";
+import {
+  getProductById,
+  editProduct,
+  quantityApi,
+  quantityByIdApi,
+} from "../../../api/api.js";
 import api from "../../../api/api.js";
 import ENDPOINTS from "../../../api/endpoints.js";
 import { toast } from "react-toastify";
@@ -75,10 +80,9 @@ const ProductEdit = () => {
         setListType(product.product_list_type || "");
         setOldImages(product.images || []);
         const qtyRes = await quantityByIdApi(id);
-        const quantities =
-          Array.isArray(qtyRes.data?.data)
-            ? qtyRes.data.data
-            : Array.isArray(qtyRes.data?.data?.quantities)
+        const quantities = Array.isArray(qtyRes.data?.data)
+          ? qtyRes.data.data
+          : Array.isArray(qtyRes.data?.data?.quantities)
             ? qtyRes.data.data.quantities
             : [];
 
@@ -86,7 +90,7 @@ const ProductEdit = () => {
           quantities.map((q) => ({
             size: q.size,
             qty: q.quantity,
-          }))
+          })),
         );
 
         const [catRes, subRes] = await Promise.all([
@@ -275,7 +279,7 @@ const ProductEdit = () => {
             </select>
           </div>
 
-          <div className="col-md-3 col-xl-3 mb-3">
+          {/* <div className="col-md-3 col-xl-3 mb-3">
             <label>
               Color <span>*</span>
             </label>
@@ -292,6 +296,17 @@ const ProductEdit = () => {
                 </option>
               ))}
             </select>
+          </div> */}
+          <div className="col-md-3 col-xl-3 mb-3">
+            <label>
+              Color <span>*</span>
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              value={color}
+              required
+            />
           </div>
 
           <div className="col-md-3 col-xl-3 mb-3">
