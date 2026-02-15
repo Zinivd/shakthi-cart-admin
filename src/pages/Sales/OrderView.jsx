@@ -175,6 +175,7 @@ const OrderView = () => {
                 <tr>
                   <th>#</th>
                   <th>Product</th>
+                  <th>Color / Size</th>
                   <th>Qty</th>
                   <th>Price</th>
                   <th>Total</th>
@@ -196,15 +197,11 @@ const OrderView = () => {
                         />
                         <div>
                           <h6 className="mb-1">{item.product?.product_name}</h6>
-                          <span>
-                            {item.product?.color} <br />
-                            {item.product?.size_unit
-                              ?.map((s) => `${s.size}`)
-                              .join(", ")}
-                          </span>
+                          <span>{item.product?.brand}</span>
                         </div>
                       </div>
                     </td>
+                    <td>{item.product?.color} / {item.size}</td>
 
                     <td>{item.quantity}</td>
                     <td>₹ {item.price}</td>
@@ -215,12 +212,12 @@ const OrderView = () => {
 
               <tfoot>
                 <tr>
-                  <td colSpan="3"></td>
+                  <td colSpan="4"></td>
                   <td>Subtotal</td>
                   <td>₹ {subtotal}</td>
                 </tr>
                 <tr>
-                  <td colSpan="3"></td>
+                  <td colSpan="4"></td>
                   <td>Total</td>
                   <td>₹ {order.total_amount}</td>
                 </tr>
