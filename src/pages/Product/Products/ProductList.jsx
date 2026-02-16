@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getProducts, quantityByIdApi } from "../../../api/api.js";
+import {
+  getProducts,
+  quantityByIdApi,
+  deleteProduct,
+} from "../../../api/api.js";
 import useTable from "../../../layouts/Table/useTable.jsx";
 import Loader from "../../../components/Loader/Loader.jsx";
 import { toast } from "react-toastify";
@@ -20,7 +24,7 @@ const ProductList = () => {
             try {
               const qtyRes = await quantityByIdApi(p.product_id);
               console.log(qtyRes);
-              
+
               return {
                 ...p,
                 size_unit: qtyRes.data?.data.quantities || [],
@@ -50,6 +54,20 @@ const ProductList = () => {
     totalPages,
     paginatedData,
   } = useTable(data, 5);
+
+  const handleDelete = async (productId) => {
+    if (!window.confirm("Are you sure you want to delete this product?"))
+      return;
+
+    try {
+      await deleteProduct({ product_id: productId });
+      toast.success("Product deleted Successfully!");
+      setData((prev) => prev.filter((p) => p.product_id !== productId));
+    } catch (error) {
+      console.error(error);
+      toast.error("Delete failed");
+    }
+  };
 
   if (loading) return <Loader />;
 
@@ -109,23 +127,35 @@ const ProductList = () => {
                     </td>
                     <td>
                       {item.size_unit?.length > 0 ? (
-    item.size_unit.map((s, i) => (
-      <div key={i}>
-        {s.size} - {s.quantity}
-      </div>
-    ))
-  ) : (
-    <span className="text-muted">No Stock</span>
-  )}
+                        item.size_unit.map((s, i) => (
+                          <div key={i}>
+                            {s.size} - {s.quantity}
+                          </div>
+                        ))
+                      ) : (
+                        <span className="text-muted">No Stock</span>
+                      )}
                     </td>
                     <td>
-                      <div className="d-flex align-items-center gap-2">
-                        <Link to={`/product/view/${item.product_id}`}>
+                      <div className="d-flex align-items-center gap-3">
+                        <Link
+                          to={`/product/view/${item.product_id}`}
+                          title="View"
+                        >
                           <i className="fas fa-external-link"></i>
                         </Link>
-                        <Link to={`/product/edit/${item.product_id}`}>
+                        <Link
+                          to={`/product/edit/${item.product_id}`}
+                          title="Edit"
+                        >
                           <i className="fas fa-pen-to-square"></i>
                         </Link>
+                        <a
+                          onClick={() => handleDelete(item.product_id)}
+                          title="Delete"
+                        >
+                          <i className="fas fa-trash-can text-danger"></i>
+                        </a>
                       </div>
                     </td>
                   </tr>

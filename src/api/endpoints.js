@@ -8,6 +8,7 @@ const ENDPOINTS = {
   DELETECUSTOMER: "/user/delete",
   GETPRODUCTS: "/product/all",
   GETPRODUCTBYID: "/product/by-id",
+  DELETEPRODUCT: "/product/delete",
   ADDPRODUCT: "/product/create",
   EDITPRODUCT: "/product/update",
   QUANTITY: "admin/product/quantity",

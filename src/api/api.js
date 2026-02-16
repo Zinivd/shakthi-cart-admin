@@ -115,6 +115,13 @@ export const getProductById = async (productId) => {
   });
 };
 
+// DELETE PRODUCT
+export const deleteProduct = (payload) => {
+  return api.delete(ENDPOINTS.DELETEPRODUCT, {
+    data: payload,
+  });
+};
+
 // ADD PRODUCTS
 export const addProduct = (payload) => {
   return api.post(ENDPOINTS.ADDPRODUCT, payload, {
