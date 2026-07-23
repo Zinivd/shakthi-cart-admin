@@ -17,7 +17,6 @@ const CategoryList = () => {
         const categories = catRes.data.data;
         const subcategories = subRes.data.data;
 
-        // Attach subcategory count to each category
         const finalData = categories.map((cat) => ({
           id: cat.category_id,
           category: cat.category_name,
@@ -47,24 +46,25 @@ const CategoryList = () => {
     paginatedData,
   } = useTable(data, 5);
 
-  if (loading)
-    return (
-      <Loader />
-    );
+  if (loading) return <Loader />;
+
   return (
     <div className="container-fluid px-0">
-      <div className="body-head mb-3">
-        <h4>Category List</h4>
+      <div className="page-header-bar mb-3">
+        <h4>Categories</h4>
         <Link to="/product/category/add">
-          <button className="listbtn">Add Category</button>
+          <button className="listbtn">
+            <i className="fas fa-plus"></i> Add Category
+          </button>
         </Link>
       </div>
+
       <div className="list-table">
         <div className="filter-container mb-2">
           <div className="filter-container-start">
             <input
               type="text"
-              placeholder="Search Here..."
+              placeholder="Search ..."
               className="form-control"
               value={search}
               onChange={(e) => {
@@ -74,11 +74,12 @@ const CategoryList = () => {
             />
           </div>
         </div>
+
         <div className="table-wrapper">
           <table className="table">
             <thead>
               <tr>
-                <th>#</th>
+                <th>S.NO</th>
                 <th>Code</th>
                 <th>Image</th>
                 <th>Category</th>
@@ -92,23 +93,25 @@ const CategoryList = () => {
                   <tr key={index}>
                     <td>{index + 1}</td>
                     <td>{item.id || "-"}</td>
-                    <td><img src={item.image} height="50px" width="50px" className="rounded object-fit-cover object-top" /></td>
+                    <td>
+                      <img
+                        src={item.image}
+                        className="cat-thumb rounded object-fit-cover object-top"
+                      />
+                    </td>
                     <td>{item.category || "-"}</td>
                     <td>{item.subCategory || "-"}</td>
                     <td>
-                      <div className="d-flex align-items-center gap-2">
-                        <Link
-                          to={`/product/category/view/${item.id}`}
-                          title="View"
-                        >
-                          <i className="fas fa-external-link"></i>
+                      <div className="d-flex align-items-center gap-2 action-icons">
+                        <Link to={`/product/category/view/${item.id}`} title="View">
+                          <span className="icon-circle">
+                            <i className="fas fa-eye"></i>
+                          </span>
                         </Link>
-
-                        <Link
-                          to={`/product/category/edit/${item.id}`}
-                          title="Edit"
-                        >
-                          <i className="fas fa-pen-to-square"></i>
+                        <Link to={`/product/category/edit/${item.id}`} title="Edit">
+                          <span className="icon-circle">
+                            <i className="fas fa-pen-to-square"></i>
+                          </span>
                         </Link>
                       </div>
                     </td>
@@ -116,7 +119,7 @@ const CategoryList = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="7" className="text-center">
+                  <td colSpan="6" className="text-center">
                     No matching records found
                   </td>
                 </tr>
@@ -125,7 +128,6 @@ const CategoryList = () => {
           </table>
         </div>
 
-        {/* Pagination */}
         <div className="paginate-div mt-3">
           <span>
             Page {currentPage} of {totalPages}

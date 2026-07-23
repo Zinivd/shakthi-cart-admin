@@ -112,6 +112,14 @@ const Menu = () => {
                 Products List
               </Link>
             </li>
+            <li>
+              <Link
+                to="/product/ColorList"
+                className="d-inline-flex text-decoration-none rounded"
+              >
+                Colors
+              </Link>
+            </li>
           </ul>
         </div>
       </li>
@@ -186,6 +194,14 @@ const Menu = () => {
                 className="d-inline-flex text-decoration-none rounded mt-3"
               >
                 Orders List
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/sales/InvoiceList"
+                className="d-inline-flex text-decoration-none rounded mt-3"
+              >
+                Invoice
               </Link>
             </li>
           </ul>

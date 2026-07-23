@@ -42,6 +42,9 @@ import CategoryAdd from "./pages/Product/Category/CategoryAdd.jsx";
 import CategoryEdit from "./pages/Product/Category/CategoryEdit.jsx";
 import CategoryView from "./pages/Product/Category/CategoryView.jsx";
 
+// colors
+import ColorList from "./pages/Product/Colors/ColorsList.jsx";
+
 // Customer
 import CustomerList from "./pages/Customer/CustomerList.jsx";
 import CustomerView from "./pages/Customer/CustomerView.jsx";
@@ -49,6 +52,7 @@ import CustomerView from "./pages/Customer/CustomerView.jsx";
 // Sales
 import OrderList from "./pages/Sales/OrderList.jsx";
 import OrderView from "./pages/Sales/OrderView.jsx";
+import InvoiceList from "./pages/Sales/Invoice/InvoiceList.jsx";
 
 // Support
 import TicketList from "./pages/Support/TicketList.jsx";
@@ -94,6 +98,9 @@ function App() {
               path="/product/category/view/:id"
               element={<CategoryView />}
             />
+            {/* Colors */}
+            <Route path="/product/ColorList" element={<ColorList />} />
+
             {/* Customer */}
             <Route path="/customer/list" element={<CustomerList />} />
             <Route path="/customer/view/:id" element={<CustomerView />} />
@@ -101,6 +108,7 @@ function App() {
             <Route path="/sales/order/list" element={<OrderList />} />
             <Route path="/sales/order/view/:id" element={<OrderView />} />
             <Route path="/sales/order/viewOld/:id" element={<OrderViewOld />} />
+            <Route path="/sales/InvoiceList" element={<InvoiceList />} />
             {/* Support */}
             <Route path="/support/ticket/list" element={<TicketList />} />
           </Route>

@@ -1,0 +1,240 @@
+.invd-page {
+    background: #eef0f3;
+    min-height: 100vh;
+    padding: 24px 16px 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.invd-toolbar {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+}
+
+.invd-print-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #12213b;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.invd-print-btn:hover {
+    background-color: #1c3358;
+}
+
+.invd-card {
+    width: 100%;
+    max-width: 900px;
+    background: #fff;
+    border-radius: 6px;
+    padding: 40px 48px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.invd-notfound {
+    text-align: center;
+    color: #6b7280;
+}
+
+.invd-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+.invd-header h2 {
+    margin: 0 0 10px;
+    font-weight: 700;
+    color: #12213b;
+}
+
+.invd-header p {
+    margin: 2px 0;
+    font-size: 13.5px;
+    color: #374151;
+}
+
+.invd-logo {
+    height: 56px;
+    width: auto;
+    border-radius: 6px;
+}
+
+.invd-section {
+    padding-bottom: 18px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.invd-section h4 {
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: #12213b;
+    font-weight: 700;
+    margin: 0 0 10px;
+}
+
+.invd-section p {
+    margin: 2px 0;
+    font-size: 13.5px;
+    color: #374151;
+}
+
+.invd-strong {
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.invd-two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.invd-table-wrap {
+    overflow-x: auto;
+    margin-bottom: 18px;
+}
+
+.invd-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.invd-table thead th {
+    background-color: #f4f6f9;
+    color: #6b7280;
+    font-weight: 700;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 12px 16px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.invd-table tbody td {
+    padding: 14px 16px;
+    font-size: 13.5px;
+    color: #374151;
+    border-bottom: 1px solid #f0f1f4;
+}
+
+.invd-summary-row {
+    align-items: start;
+}
+
+.invd-summary-row h4 {
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: #12213b;
+    font-weight: 700;
+    margin: 0 0 10px;
+}
+
+.invd-summary-row > div:first-child p {
+    margin: 0 0 10px;
+    font-size: 13.5px;
+    color: #374151;
+}
+
+.invd-badge {
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.badge-paid {
+    background-color: #e6f6ec;
+    color: #1e9e56;
+}
+
+.badge-pending {
+    background-color: #fdf1dc;
+    color: #d18b1f;
+}
+
+.invd-summary-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.invd-summary-table td {
+    padding: 6px 0;
+    font-size: 13.5px;
+    color: #374151;
+}
+
+.invd-summary-table td:last-child {
+    text-align: right;
+    color: #2178c9;
+}
+
+.invd-total-row td {
+    border-top: 1px solid #12213b;
+    padding-top: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #12213b !important;
+}
+
+.invd-footer {
+    text-align: center;
+    color: #9aa1ac;
+    font-size: 13px;
+    margin-top: 24px;
+}
+
+.invd-footer p {
+    margin: 2px 0;
+}
+
+@media screen and (max-width: 766px) {
+    .invd-card {
+        padding: 24px 20px;
+    }
+
+    .invd-two-col {
+        grid-template-columns: 1fr;
+    }
+
+    .invd-header {
+        flex-direction: column-reverse;
+        gap: 12px;
+    }
+}
+
+/* ===== Print / Save as PDF rules ===== */
+@media print {
+    .invd-page {
+        background: #fff;
+        padding: 0;
+    }
+
+    .invd-toolbar {
+        display: none;
+    }
+
+    .invd-card {
+        box-shadow: none;
+        max-width: 100%;
+        padding: 0;
+    }
+}

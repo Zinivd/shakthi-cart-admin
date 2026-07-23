@@ -1,0 +1,333 @@
+/* ===== Page header ===== */
+.inv-page {
+    width: 100%;
+    max-width: 100%;
+}
+
+.inv-header h4 {
+    font-weight: 700;
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.inv-subtext {
+    color: #8a94a6;
+    margin: 4px 0 0;
+    font-size: 0.9rem;
+}
+
+/* ===== Filter bar ===== */
+.inv-filter-bar {
+    display: grid;
+    grid-template-columns: 1fr 220px 220px;
+    gap: 12px;
+}
+
+.inv-search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.inv-search-box i {
+    position: absolute;
+    left: 14px;
+    color: #9aa1ac;
+    font-size: 14px;
+}
+
+.inv-search-box input {
+    width: 100%;
+    padding: 10px 14px 10px 38px;
+    border: 1px solid var(--border, #e2e5ec);
+    border-radius: 8px;
+    font-size: 14px;
+    background: #fff;
+}
+.inv-select-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.inv-select-box i {
+    position: absolute;
+    left: 14px;
+    color: #9aa1ac;
+    font-size: 14px;
+    pointer-events: none;
+}
+
+.inv-select {
+    width: 100%;
+    padding: 10px 14px 10px 38px;
+    border: 1px solid var(--border, #e2e5ec);
+    border-radius: 8px;
+    font-size: 14px;
+    background: #fff;
+    cursor: pointer;
+
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: none;
+}
+
+.inv-select::-ms-expand {
+    display: none;
+}
+
+.inv-search-box input:focus,
+.inv-select:focus {
+    outline: none;
+    border-color: #a9b3c4;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.08);
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-wrapper::-webkit-scrollbar {
+    height: 6px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+    background: #d6dae2;
+    border-radius: 10px;
+}
+
+.inv-table {
+    width: 100%;
+    min-width: 980px;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 0;
+}
+
+.inv-table thead th {
+    background-color: #f4f6f9;
+    color: #6b7280;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 14px 18px;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--border, #e5e7eb);
+    text-align: left;
+}
+
+.inv-table tbody td {
+    padding: 16px 18px;
+    font-size: 13.5px;
+    color: #374151;
+    vertical-align: middle;
+    border-bottom: 1px solid #f0f1f4;
+    white-space: nowrap;
+}
+
+.inv-table tbody tr {
+    background-color: #fff;
+    transition: background-color 0.15s ease;
+}
+
+.inv-table tbody tr:hover {
+    background-color: #fafbfc;
+}
+
+.inv-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Customer column: name stacked over email, allow wrap for narrow layouts */
+.inv-customer {
+    display: flex;
+    flex-direction: column;
+    white-space: normal;
+}
+
+.inv-cust-name {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 13.5px;
+}
+
+.inv-cust-email {
+    color: #9aa1ac;
+    font-size: 12px;
+}
+
+/* ===== Status badges ===== */
+.inv-badge {
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.badge-paid {
+    background-color: #e6f6ec;
+    color: #1e9e56;
+}
+
+.badge-pending {
+    background-color: #fdf1dc;
+    color: #d18b1f;
+}
+
+.badge-shipped {
+    background-color: #e3f0fd;
+    color: #2178c9;
+}
+
+.badge-cancelled {
+    background-color: #fbe4e6;
+    color: #d33d4c;
+}
+
+.badge-default {
+    background-color: #eef0f3;
+    color: #6b7280;
+}
+
+/* ===== Action button ===== */
+.inv-view-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #12213b;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.inv-view-btn:hover {
+    background-color: #1c3358;
+}
+
+
+@media screen and (min-width: 2000px) {
+    .inv-page {
+        max-width: 1800px;
+        margin: 0 auto;
+    }
+
+    .inv-header h4 {
+        font-size: 1.9rem;
+    }
+
+    .inv-table thead th,
+    .inv-table tbody td {
+        padding: 20px 24px;
+        font-size: 15px;
+    }
+
+    .inv-badge {
+        font-size: 13px;
+        padding: 6px 16px;
+    }
+
+    .inv-view-btn {
+        font-size: 14px;
+        padding: 10px 20px;
+    }
+}
+
+/* Standard desktop / laptop */
+@media screen and (min-width: 1140px) and (max-width: 1999px) {
+    .inv-table thead th,
+    .inv-table tbody td {
+        padding: 15px 18px;
+        font-size: 13.5px;
+    }
+}
+
+/* Tablet */
+@media screen and (min-width: 767px) and (max-width: 1139px) {
+    .inv-filter-bar {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+            "search search"
+            "payment delivery";
+    }
+
+    .inv-search-box {
+        grid-area: search;
+    }
+
+    .inv-table {
+        min-width: 900px;
+    }
+
+    .inv-table thead th,
+    .inv-table tbody td {
+        padding: 12px 14px;
+        font-size: 12.5px;
+    }
+}
+
+/* Mobile: 320px and up */
+@media screen and (max-width: 766px) {
+    .inv-filter-bar {
+        grid-template-columns: 1fr;
+    }
+
+    .inv-header h4 {
+        font-size: 1.25rem;
+    }
+
+    .inv-subtext {
+        font-size: 0.8rem;
+    }
+
+    .inv-table {
+        min-width: 820px;
+    }
+
+    .inv-table thead th,
+    .inv-table tbody td {
+        padding: 10px 12px;
+        font-size: 12px;
+    }
+
+    .inv-cust-name {
+        font-size: 12.5px;
+    }
+
+    .inv-cust-email {
+        font-size: 11px;
+    }
+
+    .inv-badge {
+        font-size: 11px;
+        padding: 3px 10px;
+    }
+
+    .inv-view-btn {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+}
+
+/* Very small phones: 320px–374px */
+@media screen and (max-width: 374px) {
+    .inv-table {
+        min-width: 760px;
+    }
+
+    .inv-search-box input,
+    .inv-select {
+        font-size: 13px;
+        padding: 9px 12px 9px 34px;
+    }
+}
