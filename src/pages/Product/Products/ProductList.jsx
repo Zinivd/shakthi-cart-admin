@@ -100,7 +100,7 @@ const ProductList = () => {
           <table className="table">
             <thead>
               <tr>
-                <th>#</th>
+                <th>S.No</th>
                 <th>Code</th>
                 <th>Brand</th>
                 <th>Name</th>

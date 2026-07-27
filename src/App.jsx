@@ -53,6 +53,7 @@ import CustomerView from "./pages/Customer/CustomerView.jsx";
 import OrderList from "./pages/Sales/OrderList.jsx";
 import OrderView from "./pages/Sales/OrderView.jsx";
 import InvoiceList from "./pages/Sales/Invoice/InvoiceList.jsx";
+import InvoiceDetail from "./pages/Sales/Invoice/InvoiceDetail.jsx";
 
 // Support
 import TicketList from "./pages/Support/TicketList.jsx";
@@ -104,11 +105,14 @@ function App() {
             {/* Customer */}
             <Route path="/customer/list" element={<CustomerList />} />
             <Route path="/customer/view/:id" element={<CustomerView />} />
+
             {/* Sales */}
             <Route path="/sales/order/list" element={<OrderList />} />
             <Route path="/sales/order/view/:id" element={<OrderView />} />
             <Route path="/sales/order/viewOld/:id" element={<OrderViewOld />} />
             <Route path="/sales/InvoiceList" element={<InvoiceList />} />
+            <Route path="/InvoiceDetail/:orderId" element={<InvoiceDetail />} />
+
             {/* Support */}
             <Route path="/support/ticket/list" element={<TicketList />} />
           </Route>
