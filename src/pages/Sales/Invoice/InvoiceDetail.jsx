@@ -1,8 +1,8 @@
 import React, { useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import "./InvoiceDetail.css";
-import Assets from "./Assets";
+
 
 const companyInfo = {
   name: "SakthiCart",
@@ -15,221 +15,6 @@ const companyInfo = {
   website: "https://sakthicart.com",
 };
 
-const staticInvoices = [
-  {
-    invoiceNo: "INV-00009",
-    orderId: "FLYODR-0723&A00025",
-    name: "Arun Kumar",
-    email: "arunkumar@gmail.com",
-    date: "23 Jul 2026",
-    amount: 849.99,
-    payment: "Paid",
-    delivery: "Pending",
-    address: "123, Harur, Dharmapuri, Tamil Nadu - 636016",
-    saleTime: "19 Jul 2026, 01:04 pm",
-    paymentGateway: "razorpay",
-    item: {
-      description: "Ankle Leggings - SteelPink (M)",
-      sku: "STE-M-2-48552",
-    },
-  },
-  {
-    invoiceNo: "",
-    orderId: "FLYODR-0723&A00024",
-    name: "Priya",
-    email: "priya@gmail.com",
-    date: "23 Jul 2026",
-    amount: 599.0,
-    payment: "Pending",
-    delivery: "Pending",
-    address: "123, Harur, Dharmapuri, Tamil Nadu - 636016",
-    saleTime: "19 Jul 2026, 12:40 pm",
-    paymentGateway: "razorpay",
-    item: {
-      description: "Ankle Leggings - SteelPink (M)",
-      sku: "STE-M-2-48551",
-    },
-  },
-  {
-    invoiceNo: "INV-00008",
-    orderId: "FLYODR-0722&A00023",
-    name: "Karthik",
-    email: "karthik@gmail.com",
-    date: "22 Jul 2026",
-    amount: 1249.5,
-    payment: "Paid",
-    delivery: "Pending",
-    address: "123, Harur, Dharmapuri, Tamil Nadu - 636016",
-    saleTime: "19 Jul 2026, 11:15 am",
-    paymentGateway: "razorpay",
-    item: {
-      description: "Ankle Leggings - SteelPink (M)",
-      sku: "STE-M-2-48550",
-    },
-  },
-  {
-    invoiceNo: "INV-00007",
-    orderId: "FLYODR-0722&A00022",
-    name: "Divya",
-    email: "divya@gmail.com",
-    date: "22 Jul 2026",
-    amount: 999.0,
-    payment: "Paid",
-    delivery: "Shipped",
-    address: "45, Textile Market Road, Tiruppur, Tamil Nadu - 641601",
-    saleTime: "13 Jul 2026, 04:22 pm",
-    paymentGateway: "razorpay",
-    item: {
-      description: "Ankle Leggings - SteelPink (M)",
-      sku: "STE-M-2-48549",
-    },
-  },
-  {
-    invoiceNo: "INV-00006",
-    orderId: "FLYODR-0721&A00021",
-    name: "Sathish",
-    email: "sathish@gmail.com",
-    date: "21 Jul 2026",
-    amount: 1899.0,
-    payment: "Paid",
-    delivery: "Shipped",
-    address: "12, Anna Nagar, Coimbatore, Tamil Nadu - 641006",
-    saleTime: "13 Jul 2026, 02:10 pm",
-    paymentGateway: "razorpay",
-    item: {
-      description: "Track Pant Combo - Charcoal (L)",
-      sku: "TRK-L-3-77213",
-    },
-  },
-  {
-    invoiceNo: "INV-00005",
-    orderId: "FLYODR-0721&A00020",
-    name: "Keerthana",
-    email: "keerthana@gmail.com",
-    date: "21 Jul 2026",
-    amount: 649.0,
-    payment: "Paid",
-    delivery: "Shipped",
-    address: "12, Anna Nagar, Coimbatore, Tamil Nadu - 641006",
-    saleTime: "13 Jul 2026, 11:05 am",
-    paymentGateway: "razorpay",
-    item: {
-      description: "Ankle Leggings - SteelPink (M)",
-      sku: "STE-M-2-48548",
-    },
-  },
-  {
-    invoiceNo: "INV-00004",
-    orderId: "FLYODR-0720&A00019",
-    name: "Ramesh",
-    email: "ramesh@gmail.com",
-    date: "20 Jul 2026",
-    amount: 720.0,
-    payment: "Pending",
-    delivery: "Pending",
-    address: "78, Race Course Road, Coimbatore, Tamil Nadu - 641018",
-    saleTime: "10 Jul 2026, 09:45 am",
-    paymentGateway: "Cash on Delivery",
-    item: {
-      description: "Full Length Leggings - Jet Black (L)",
-      sku: "JBL-L-1-30021",
-    },
-  },
-  {
-    invoiceNo: "INV-00003",
-    orderId: "FLYODR-0719&A00018",
-    name: "Nisha",
-    email: "nisha@gmail.com",
-    date: "19 Jul 2026",
-    amount: 1540.75,
-    payment: "Paid",
-    delivery: "Delivered",
-    address: "9, Gandhipuram, Coimbatore, Tamil Nadu - 641012",
-    saleTime: "09 Jul 2026, 06:30 pm",
-    paymentGateway: "razorpay",
-    item: {
-      description: "Yoga Set Combo - Olive Green (S)",
-      sku: "OLV-S-4-19087",
-    },
-  },
-  {
-    invoiceNo: "INV-00002",
-    orderId: "FLYODR-0718&A00017",
-    name: "Hari",
-    email: "hari@gmail.com",
-    date: "18 Jul 2026",
-    amount: 825.0,
-    payment: "Paid",
-    delivery: "Delivered",
-    address: "33, R.S. Puram, Coimbatore, Tamil Nadu - 641002",
-    saleTime: "05 Jul 2026, 10:12 am",
-    paymentGateway: "razorpay",
-    item: { description: "Ankle Leggings - Maroon (M)", sku: "MRN-M-2-48601" },
-  },
-  {
-    invoiceNo: "INV-00001",
-    orderId: "FLYODR-0717&A00016",
-    name: "Lakshmi",
-    email: "lakshmi@gmail.com",
-    date: "17 Jul 2026",
-    amount: 430.0,
-    payment: "Pending",
-    delivery: "Cancelled",
-    address: "5, Nehru Street, Salem, Tamil Nadu - 636001",
-    saleTime: "01 Jul 2026, 03:55 pm",
-    paymentGateway: "Cash on Delivery",
-    item: { description: "Capri Leggings - Navy (S)", sku: "NVY-S-2-48622" },
-  },
-  {
-    invoiceNo: "INV-00000",
-    orderId: "FLYODR-0716&A00015",
-    name: "Manoj",
-    email: "manoj@gmail.com",
-    date: "16 Jul 2026",
-    amount: 1190.0,
-    payment: "Paid",
-    delivery: "Shipped",
-    address: "21, Bazaar Street, Erode, Tamil Nadu - 638001",
-    saleTime: "28 Jun 2026, 01:20 pm",
-    paymentGateway: "razorpay",
-    item: {
-      description: "Track Pant Combo - Grey (XL)",
-      sku: "GRY-XL-3-77240",
-    },
-  },
-  {
-    invoiceNo: "INV-00098",
-    orderId: "FLYODR-0715&A00014",
-    name: "Aishwarya",
-    email: "aishwarya@gmail.com",
-    date: "15 Jul 2026",
-    amount: 520.0,
-    payment: "Paid",
-    delivery: "Pending",
-    address: "8, Big Bazaar Street, Madurai, Tamil Nadu - 625001",
-    saleTime: "25 Jun 2026, 05:05 pm",
-    paymentGateway: "razorpay",
-    item: {
-      description: "Ankle Leggings - SteelPink (S)",
-      sku: "STE-S-2-48630",
-    },
-  },
-  {
-    invoiceNo: "INV-00097",
-    orderId: "FLYODR-0714&A00013",
-    name: "Vijay",
-    email: "vijay@gmail.com",
-    date: "14 Jul 2026",
-    amount: 1650.0,
-    payment: "Pending",
-    delivery: "Shipped",
-    address: "56, East Car Street, Madurai, Tamil Nadu - 625002",
-    saleTime: "20 Jun 2026, 11:40 am",
-    paymentGateway: "Cash on Delivery",
-    item: { description: "Yoga Set Combo - Black (M)", sku: "BLK-M-4-19099" },
-  },
-];
-
 const deriveBreakdown = (amount) => {
   const subtotal = Math.round((amount / 1.1602) * 100) / 100;
   const discount = Math.round(subtotal * 0.1 * 100) / 100;
@@ -239,18 +24,15 @@ const deriveBreakdown = (amount) => {
   return { subtotal, discount, shipping, tax, netAfterDiscount };
 };
 
-// ---------------------------------------------------------------------------
-
 const paymentBadgeClass = (status) =>
   status === "Paid" ? "badge-paid" : "badge-pending";
 
 const InvoiceDetail = () => {
   const { orderId } = useParams();
-  const printRef = useRef(null);
 
-  const invoice = staticInvoices.find(
-    (inv) => inv.orderId === decodeURIComponent(orderId || ""),
-  );
+  const { state: invoice } = useLocation();
+  const printRef = useRef(null);
+  const Logo = "/assets/images/Logo.png";
 
   const handlePrint = useReactToPrint({
     contentRef: printRef,
@@ -264,7 +46,11 @@ const InvoiceDetail = () => {
       <div className="invd-page">
         <div className="invd-card invd-notfound">
           <p>
-            Invoice not found for order <b>{orderId}</b>.
+            No invoice data for order <b>{orderId}</b>.
+          </p>
+          <p>
+            Please open this page by clicking <b>View Invoice</b> from the
+            invoice list.
           </p>
         </div>
       </div>
@@ -293,7 +79,7 @@ const InvoiceDetail = () => {
               <b>Invoice Date:</b> -
             </p>
           </div>
-          <img src={Assets.Logo} alt="Company logo" className="invd-logo" />
+          <img src={Logo} alt="Company logo" className="invd-logo" />
         </div>
 
         <div className="invd-section">
